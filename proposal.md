@@ -1,15 +1,13 @@
 ## BloodBridge -Bridge between donor & patient
 ### 1. Introduction
 
-BloodLink is a web-based Blood Donor Management and Emergency Blood Finder System designed to connect registered blood donors with individuals who require blood. The system provides a centralized platform where eligible donors can register their information, maintain their donation history, and make themselves available to people searching for blood.
+BloodBridge is a web-based Blood Donor Management and Emergency Blood Finder System designed to connect registered blood donors with individuals who require blood. The system provides a centralized platform where eligible donors can register their information, maintain their donation history, and make themselves available to people searching for blood.
 
 The system allows users to search for blood donors based on blood group and geographical proximity. Using the user's current location and the donor's registered location, the system identifies available donors within a specified radius, with 5 KM being the primary search range.
 
 The platform also provides an administrator panel through which authorized administrators can manage donors, general users, donor verification, donation records, and other system information.
 
-The system will be developed using HTML, CSS, JavaScript, PHP, AJAX and MySQL following the Model-View-Controller (MVC) architectural pattern.
-
----
+The system will be developed using HTML, CSS, JavaScript, PHP, AJAX following the Model-View-Controller (MVC) architectural pattern.
 
 ## 2. Problem Statement
 
@@ -24,13 +22,12 @@ These methods have several limitations:
 - There may be no centralized donor database.
 - There is limited verification of donor information.
 
-BloodLink aims to solve these problems by providing a centralized and structured blood donor management platform.
+BloodBridge aims to solve these problems by providing a centralized and structured blood donor management platform.
 
 ---
 
 ## 3. Aim
-
-The primary aim of BloodLink is to develop a secure and user-friendly web application that allows people to register as blood donors and helps blood seekers find suitable nearby donors according to blood group and geographical distance.
+The primary aim of BloodBridge is to develop a secure and user-friendly web application that allows people to register as blood donors and helps blood seekers find suitable nearby donors according to blood group and geographical distance.
 
 ---
 
@@ -54,8 +51,6 @@ The objectives of the project are:
 14. To implement AJAX for dynamic operations without unnecessary page reloads.
 15. To implement the backend following MVC architecture.
 16. To maintain appropriate security and privacy for sensitive information.
-
----
 
 ## 5. User Types
 
@@ -121,8 +116,6 @@ Admin functionality will include:
 - System statistics
 - Administrative logs
 - Admin profile management
-
----
 
 ## 6. Major System Features
 
@@ -224,8 +217,6 @@ instead of the donor's exact coordinates.
 
 Only the necessary contact information should be exposed to a user searching for blood.
 
----
-
 ## 8. Technology Stack
 
 | Layer | Technology |
@@ -240,13 +231,12 @@ Only the necessary contact information should be exposed to a user searching for
 | Authentication | PHP Sessions |
 | Password Security | `password_hash()` / `password_verify()` |
 | Location | Browser Geolocation API |
-| Server | Apache / XAMPP / cPanel |
+| Server | Apache / XAMPP |
 | Development | VS Code |
 
 ---
 
 ## 9. Proposed Website Pages
-
 ### Public Pages
 
 1. Home
@@ -259,7 +249,6 @@ Only the necessary contact information should be exposed to a user searching for
 8. Reset Password
 
 ### Donor Pages
-
 9. Donor Dashboard
 10. Donor Profile
 11. Edit Profile
@@ -285,10 +274,6 @@ Only the necessary contact information should be exposed to a user searching for
 
 ---
 
-## 10. Minimum Required Pages
-
-For the minimum viable project, at least these pages should be designed and implemented:
-
 ### Page 1 — Home Page
 
 Publicly accessible to everyone.
@@ -297,7 +282,7 @@ Main sections:
 
 - Navigation bar
 - Hero section
-- Find Blood CTA
+- Find Blood CTA(Call to Action) 
 - Become a Donor CTA
 - Blood group section
 - How It Works
@@ -351,62 +336,31 @@ The result should display:
 - Contact option
 
 ---
-
-## 11. Home Page Design
-
-The homepage should be clean, modern, responsive and healthcare-oriented.
-
-Suggested structure:
-
-```text
-------------------------------------------------
-LOGO       Home  Find Blood  About Us  Login
-------------------------------------------------
-
-              FIND BLOOD.
-              SAVE A LIFE.
-
-Find nearby blood donors when you need them most.
-
-       [ FIND BLOOD ] [ BECOME A DONOR ]
-
-------------------------------------------------
-
-              FIND BLOOD FAST
-
- [ Blood Group ] [ Location ] [ Search ]
-
-------------------------------------------------
-
-              HOW IT WORKS
-
-      01              02              03
-   Register  --->   Search  --->    Contact
-
-------------------------------------------------
-
-              BLOOD GROUPS
-
- A+  A-  B+  B-  AB+  AB-  O+  O-
-
-------------------------------------------------
-
-            BECOME A DONOR
-
-       Your donation can save a life.
-
-             [ REGISTER NOW ]
-
-------------------------------------------------
-
-                 FOOTER
-------------------------------------------------
-
-
-
-
-
+---
 Donor  → Donor Dashboard
-User   → User Dashboard
-Admin  → Admin Dashboard
 
+User   → User Dashboard
+
+Admin  → Admin Dashboard
+---
+
+
+### 10.Future Scope
+
+Future versions can include:
+
+Emergency blood request posting
+SMS notifications
+Email notifications
+Push notifications
+Hospital integration
+Donation certificates
+Donor reward system
+Donor rating
+Blood request tracking
+Advanced analytics
+Mobile application
+Map-based donor visualization
+Multi-language support
+AI-assisted donor matching
+45. Expected Outcome
