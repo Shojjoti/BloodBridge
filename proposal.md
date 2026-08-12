@@ -342,25 +342,36 @@ Donor  → Donor Dashboard
 User   → User Dashboard
 
 Admin  → Admin Dashboard
----
 
 
 ### 10.Future Scope
 
 Future versions can include:
 
-Emergency blood request posting
-SMS notifications
-Email notifications
-Push notifications
-Hospital integration
-Donation certificates
-Donor reward system
-Donor rating
-Blood request tracking
-Advanced analytics
-Mobile application
-Map-based donor visualization
-Multi-language support
-AI-assisted donor matching
-45. Expected Outcome
+1.Emergency blood request posting
+
+2.SMS notifications
+ 
+3.Email notifications
+
+4.Push notifications
+
+5.Hospital integration
+
+6.Donation certificates
+
+7.Donor reward system
+
+8.Donor rating
+
+9.Blood request tracking
+
+10.Advanced analytics
+
+11.Mobile application
+
+12.Map-based donor visualization
+
+13.Multi-language support
+
+14.AI-assisted donor matching
