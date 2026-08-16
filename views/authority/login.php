@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login · BloodBridge</title>
-    <link rel="stylesheet" href="/BloodBridge/public/style/auth-style.css">
+    <link rel="stylesheet" href="../../public/style/auth-style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -15,7 +15,7 @@
 
 <body>
     <div class="auth-parent">
-        <a href="/BloodBridge/views/home/1-home.html" class="back-home">← Back to home</a>
+        <a href="../../views/home/1.home.php" class="back-home">← Back to home</a>
 
         <div class="auth-left">
             <div class="auth-box">

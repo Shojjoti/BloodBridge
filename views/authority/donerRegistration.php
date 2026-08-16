@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Become a Blood Donor</title>
-    <link rel="stylesheet" href="../../public/style/donarRegistration.css">
+    <link rel="stylesheet" href="../../public/style/donar&UserRegistration.css">
     <link rel="stylesheet" href="../../public/style/1.home.css">
 </head>
 
@@ -30,7 +30,6 @@
 </header>
 
 <div class="main-container">
-
         <!-- LEFT SIDE -->
         <div class="form-section">
             <div class="form-box">
@@ -141,7 +140,6 @@
             </div>
 
         </div>
-
 
         <!-- RIGHT SIDE -->
         <div class="donation-section">
