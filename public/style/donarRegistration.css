@@ -1,4 +1,4 @@
-* {
+*{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -16,9 +16,10 @@ body {
 
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
+    gap: 50px;
 
-    padding: 30px;
+    padding: 10px;
 }
 
 .form-section {
@@ -183,8 +184,7 @@ button:hover {
 
 
 .donation-section {
-    width: 260px;
-    min-height: 500px;
+    width: 260px;    
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -192,16 +192,24 @@ button:hover {
     padding-left: 25px;
 }
 
+
 .blood-illustration {
-    width: 200px;
-    height: 245px;
+    width: 360px;
+    height: 360px;
     position: relative;
-    margin-bottom: 15px;
+    margin-bottom: 15px;    
+}
+
+.blood-illustration img {
+    width: 330px;
+    height:330px;
+    object-fit: contain;
+    display: block;
 }
 
 .donation-section h2 {
     text-align: center;
-    font-size: 21px;
+    font-size: 26px;
     line-height: 1.4;
     margin-top: 5px;
 }

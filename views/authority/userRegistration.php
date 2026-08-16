@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>General User Registration</title>
-    <link rel="stylesheet" href="public/style/userRegistration.css">
+    <link rel="stylesheet" href="../../public/style/userRegistration.css">
 </head>
 
 <body>
@@ -43,7 +43,7 @@
                     <div class="input-group">
                         <label>Password</label>
                         <div class="password-box">
-                            <input type="password" placeholder="Enter password" >                           <span>◉</span>
+                            <input type="password" placeholder="Enter password">                           
                         </div>
                     </div>
 
@@ -52,8 +52,7 @@
                     <div class="input-group">
                         <label>Confirm Password</label>
                         <div class="password-box">
-                            <input  type="password" placeholder="Confirm password">
-                            <span>◉</span>
+                            <input  type="password" placeholder="Confirm password">                            
                         </div>
                     </div>
 
@@ -70,7 +69,7 @@
 
                     Already have an account?
 
-                    <a href="views/authority/login.php">
+                    <a href="../../views/authority/login.php">
                         Login
                     </a>
 
@@ -79,12 +78,11 @@
             </div>
 
         </div>
-        <!-- ================= RIGHT SIDE ================= -->
-
+        <!-- RIGHT SIDE  -->
         <div class="illustration-section">
 
             <!-- image -->
-             <img src="public/..images/..peopleBlood.png" alt="peopleBlood">
+             <img src="../../public/images/peopleBlood.png" alt="peopleBlood">
             <h2>
                 Be the reason<br>
                 someone smiles today.
