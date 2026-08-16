@@ -1,0 +1,257 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #ffffff;
+    color: #222;
+}
+
+.main-container {
+    width: 100%;
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    padding: 30px;
+}
+
+.form-section {
+    width: 650px;
+}
+
+.form-box {
+    border: 1px solid #eeeeee;
+    border-radius: 12px;
+    padding: 25px 28px 22px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+
+/* Heading */
+.form-box h1 {
+    text-align: center;
+    font-size: 23px;
+    font-weight: 700;
+    margin-bottom: 7px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #777;
+    font-size: 13px;
+    margin-bottom: 25px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 20px;
+    row-gap: 15px;
+}
+
+.input-group {
+    width: 100%;
+}
+
+.input-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+
+/* Input */
+.input-group input,
+.input-group select {
+    width: 100%;
+    height: 36px;
+
+    border: 1px solid #e2e2e2;
+    border-radius: 5px;
+
+    padding: 0 11px;
+    font-size: 12px;
+    outline: none;
+    background-color: #fff;
+}
+
+
+/* Placeholder */
+.input-group input::placeholder {
+    color: #b8b8b8;
+}
+
+
+/* Focus */
+.input-group input:focus,
+.input-group select:focus {
+    border-color: #e00000;
+}
+
+
+/* Select */
+.input-group select {
+    color: #999;
+}
+
+.password-box {
+    position: relative;
+}
+
+.password-box input {
+    padding-right: 35px;
+}
+
+.password-box span {
+    position: absolute;
+    right: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: #999;
+    cursor: pointer;
+}
+
+
+.terms {
+    display: flex;
+    align-items: center;
+    margin-top: 22px;
+    font-size: 11px;
+}
+
+.terms input {
+    width: 14px;
+    height: 14px;
+    margin-right: 7px;
+    cursor: pointer;
+}
+
+.terms label {
+    color: #555;
+    cursor: pointer;
+}
+
+.terms span {
+    color: #d60000;
+    font-weight: bold;
+}
+
+
+button {
+    width: 100%;
+    height: 37px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #df0000;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #c90000;
+}
+
+.login-text {
+    text-align: center;
+    font-size: 11px;
+    color: #777;
+    margin-top: 18px;
+}
+
+.login-text a {
+    color: #d80000;
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 3px;
+}
+
+.login-text a:hover {
+    text-decoration: underline;
+}
+
+
+.donation-section {
+    width: 260px;
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-left: 25px;
+}
+
+.blood-illustration {
+    width: 200px;
+    height: 245px;
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.donation-section h2 {
+    text-align: center;
+    font-size: 21px;
+    line-height: 1.4;
+    margin-top: 5px;
+}
+
+.donation-section p {
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.7;
+    color: #555;
+    margin-top: 18px;
+}
+
+@media (max-width: 900px) {
+
+    .main-container {
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .form-section {
+        width: 100%;
+        max-width: 650px;
+    }
+
+    .donation-section {
+        width: 100%;
+        padding-left: 0;
+        margin-top: 30px;
+        min-height: auto;
+    }
+}
+
+
+@media (max-width: 550px) {
+
+    .form-box {
+        padding: 20px 15px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-box h1 {
+        font-size: 20px;
+    }
+
+    .subtitle {
+        font-size: 12px;
+    }
+
+}
