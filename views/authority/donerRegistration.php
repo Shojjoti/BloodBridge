@@ -5,12 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Become a Blood Donor</title>
-    <link rel="stylesheet" href="public/..style/..donarRegistration.css">
+    <link rel="stylesheet" href="../../public/style/donarRegistration.css">
+    <link rel="stylesheet" href="../../public/style/1.home.css">
 </head>
 
 <body>
 
-    <div class="main-container">
+<header class="navbar">
+
+    <div class="brand">
+        BloodBridge               
+            <img src="../../public/images/logo.jpg" alt="BloodBridge Logo">        
+    </div>
+
+
+    <nav class="nav-links">
+        <a href="../../views/home/1.home.php" class="active">
+            Home
+        </a>
+        <a href="../../views/blood/findBlood.php">
+            Find Blood
+        </a>       
+    </nav>    
+</header>
+
+<div class="main-container">
 
         <!-- LEFT SIDE -->
         <div class="form-section">
@@ -116,7 +135,7 @@
 
                 <p class="login-text">
                     Already have an account?
-                    <a href="views/home/1.home.php">Login</a>
+                    <a href="../../views/authority/login.php">Login</a>
                 </p>
 
             </div>
@@ -128,17 +147,21 @@
         <div class="donation-section">
             <!-- Blood Bag Illustration -->
             <div class="blood-illustration">
-                <img src="public/images/bloodOnBag.png" alt="Blood on Bag">
+                <img src="../../public/images/bloodOnBag.png" alt="Blood on Bag">
             </div>
-            <h2>
+
+            <div>
+                <h2>
                 Donate Blood<br>
                 Save Life
-            </h2>
+                </h2>
 
-            <p>
+                <p>
                 Your donation can bring<br>
                 someone back to life.
-            </p>
+                </p>
+            </div>
+            
 
         </div>
 

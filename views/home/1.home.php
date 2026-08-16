@@ -5,40 +5,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home · BloodBridge</title>
-    <!-- Main CSS File -->
+    
     <link rel="stylesheet" href="../../public/style/1.home.css">
 </head>
 <body>
 <header class="navbar">
 
     <div class="brand">
-        BloodBridge 
-               <!--image  -->
-             <img src="../../public/images/logo.png" alt="BloodBridge Logo">
-        
+        BloodBridge               
+            <img src="../../public/images/logo.jpg" alt="BloodBridge Logo">        
     </div>
 
 
     <nav class="nav-links">
-        <a href="views/home/1.home.php" class="active">
+        <a href="../../views/home/1.home.php" class="active">
             Home
         </a>
-        <a href="views/blood/findBlood.php">
+        <a href="../../views/blood/findBlood.php">
             Find Blood
         </a>
-        <a href="views/authority/donerRegistration.php">
+        <a href="../../views/authority/donerRegistration.php">
             Become a Donor
         </a>
     </nav>
 
 
-    <div class="nav-actions">
-        <button class="btn btn-outline btn-sm">
-            Log in
-        </button>
-        <button class="btn btn-primary btn-sm">
-            Register
-        </button>
+    <div class="nav-actions">        
+
+        <button class="btn btn-outline btn-sm" onclick="window.location.href='../../views/authority/login.php'"> Log in </button>
+              
+        <button class="btn btn-primary btn-sm" onclick="window.location.href='../../views/authority/donerRegistration.php'"> Register </button>    
+                
     </div>
 </header>
 
@@ -50,17 +47,14 @@
             <span>Save a Life</span>
         </h1>
         <p>
-            BloodLink connects blood donors with people in need.
+            BloodBride connects blood donors with people in need.
             Find the right donor, right now, right near you.
         </p>
-        <div class="hero-buttons">
-            <button class="btn btn-primary">
-                Find Blood Now
-            </button>
+        <div class="hero-buttons">          
 
-            <button class="btn btn-outline">
-                Become a Donor
-            </button>
+            <button class="btn btn-primary" onclick="window.location.href='../../views/blood/findBlood.php'"> Find Blood Now </button>
+
+            <button class="btn btn-outline" onclick="window.location.href='../../views/authority/donerRegistration.php'"> Become a Donor </button>             
         </div>
     </div>
 
@@ -71,13 +65,10 @@
 </section>
 
 <section class="stats container">
-
-
     <!-- STAT 1 -->
     <div class="stat-item">
         <div class="stat-icon">
-            <!-- IMAGE: Donor / Person icon -->
-
+            <img src="../../public/images/users.png" alt="user">
         </div>
         <div class="stat-info">
 
@@ -96,6 +87,7 @@
     <div class="stat-item">
         <div class="stat-icon">
             <!-- IMAGE: Heart icon -->
+             <img src="../../public/images/community.png" alt="people helped">
         </div>
 
         <div class="stat-info">
@@ -114,6 +106,7 @@
     <div class="stat-item">
         <div class="stat-icon">
             <!-- IMAGE: Blood drop icon -->
+             <img src="../../public/images/blood.png" alt="Blood-Request icon">
         </div>
 
         <div class="stat-info">
@@ -131,6 +124,7 @@
     <div class="stat-item">
         <div class="stat-icon">
             <!-- IMAGE: Location / Map icon -->
+             <img src="../../public/images/location-pin.png" alt="cities covers icon">
 
         </div>
 
@@ -159,7 +153,7 @@
             <div class="step-number">
                 1
             </div>
-            <!-- IMAGE: Register icon/image -->
+            <img src="../../public/images/user-profile.png" alt="">
             <h3> Register </h3>
 
             <p>
@@ -175,7 +169,7 @@
             <div class="step-number">
                 2
             </div>
-            <!-- IMAGE: Search icon/image -->
+            <img src="../../public/images/computer-mouse.png" alt="search">            
             <h3>Search  </h3>
             <p>
                 Filter donors near you by blood group
@@ -189,6 +183,7 @@
             <div class="step-number">
                 3
             </div>
+            <img src="../../public/images/circle.png" alt="connect">
             <!-- IMAGE: Connect icon/image -->
             <h3>   Connect </h3>
             <p>
@@ -229,10 +224,11 @@
         <div class="footer-column footer-about">
             <div class="footer-brand">
                 BloodBridge
+                <img src="../../public/images/logo.jpg" alt="blood drop logo">
                 <!-- IMAGE: Small blood drop logo -->
             </div>
             <p>
-                BloodLink connects donors with people in need,
+                BloodBridge connects donors with people in need,
                 so help arrives faster when it matters most.
             </p>
         </div>
@@ -240,16 +236,16 @@
         <div class="footer-column">
             <h4> Quick Links </h4>
 
-            <a href="views/home/1.home.php">Home </a>
-            <a href="views/blood/findBlood.php">Find Blood </a>
-            <a href="views/authority/donerRegistration.php">Become a Donor</a>
-            <a href="#"> About Us  </a>
+            <a href="../../views/home/1.home.php">Home </a>
+            <a href="../../views/blood/findBlood.php">Find Blood </a>
+            <a href="../../views/authority/donerRegistration.php">Become a Donor</a>
+            <a href="../../views/home/aboutUs.php"> About Us  </a>
         </div>
 
         <!-- DONORS -->
         <div class="footer-column">
             <h4> For Donors </h4>
-            <a href="views/authority/donerRegistration.php">
+            <a href="../../views/authority/donerRegistration.php">
                 Donor Register
             </a>
 
@@ -262,10 +258,10 @@
         <!-- USERS -->
         <div class="footer-column">
             <h4> For Users  </h4>
-            <a href="views/blood/searchResult.php">
+            <a href="../../views/blood/searchResult.php">
                 Search Blood
             </a>
-            <a href="views/blood/searchResult.php">
+            <a href="../../views/blood/searchResult.php">
                 Blood Requests
             </a>
             <a href="#">
@@ -277,14 +273,13 @@
 
 
         <!-- CONTACT -->
-
         <div class="footer-column">
             <h4> Contact Us </h4>
             <span>
                 +880 1234-567890
             </span>
             <span>
-                support@bloodlink.com
+                support@bloodBridge.com
             </span>
             <span>
                 Dhaka, Bangladesh
