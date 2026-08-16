@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login · BloodBridge</title>
-    <link rel="stylesheet" href="../../public/style/auth-style.css">
+    <link rel="stylesheet" href="/BloodBridge/public/style/auth-style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -14,11 +14,11 @@
 </head>
 
 <body>
-    <div class="auth-parent">
-        <a href="../../views/home/1.home.php" class="back-home">← Back to home</a>
+    <div class="auth-parent" style="align-items: center; justify-content: center;">
+        <a href="/BloodBridge/views/home/1-home.html" class="back-home">← Back to home</a>
 
-        <div class="auth-left">
-            <div class="auth-box">
+        <div class="login-card">
+            <div class="login-card-left">
                 <h1 class="auth-h1">Welcome Back</h1>
                 <p class="auth-p">Log in to your account</p>
 
@@ -55,13 +55,13 @@
                         User</button>
                 </div>
             </div>
-        </div>
 
-        <div class="auth-right">
-            <img src="/BloodBridge/public/images/blood_drop.png" alt="Blood Drop" width="220" height="220">
-            <div>
-                <h2>Every Drop Counts</h2>
-                <p>Sign in to manage requests, track donations, and stay connected.</p>
+            <div class="login-card-right">
+                <img src="/BloodBridge/public/images/blood_drop.png" alt="Blood Drop" width="180" height="180">
+                <div>
+                    <h2>Every Drop Counts</h2>
+                    <p>Sign in to manage requests, track donations, and stay connected.</p>
+                </div>
             </div>
         </div>
     </div>
