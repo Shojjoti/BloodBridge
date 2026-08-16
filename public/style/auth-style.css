@@ -71,6 +71,12 @@ body{
     background-color: #eef1f4;
 }
 
+.navbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 32px;background:#fff;border-bottom:1px solid gray;
+  position:sticky;top:0;z-index:50;
+}
+
 /* ---------- auth layout ---------- */
 .auth-parent{
     min-height: 100vh;
@@ -80,17 +86,8 @@ body{
     position: relative;
     padding: 90px 24px 40px;
 }
-.back-home{
-    position: absolute;
-    top: 28px;
-    left: 32px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #687280;
-}
-.back-home:hover{
-    color: #D62839;
-}
+.back-home{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:13px;color: gray;}
+.back-home:hover{color: red;}
 .auth-left{
     flex: 1;
     display: flex;
@@ -311,7 +308,7 @@ body{
 .login-card{
     display: flex;
     width: 100%;
-    max-width: 760px;
+    max-width: 850px;
     background-color: white;
     border: 1px solid #E5E7EB;
     border-radius: 16px;
