@@ -3,7 +3,6 @@
     padding: 0;
     box-sizing: border-box;
 }
-
 body {
     font-family: Arial, Helvetica, sans-serif;
     background-color: #ffffff;
@@ -33,15 +32,13 @@ body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
-
 /* Heading */
 .form-box h1 {
     text-align: center;
-    font-size: 23px;
+    font-size: 26px;
     font-weight: 700;
     margin-bottom: 7px;
 }
-
 .subtitle {
     text-align: center;
     color: #777;
@@ -62,10 +59,11 @@ body {
 
 .input-group label {
     display: block;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 600;
     margin-bottom: 6px;
     color: #333;
+   
 }
 
 
@@ -79,7 +77,7 @@ body {
     border-radius: 5px;
 
     padding: 0 11px;
-    font-size: 12px;
+    font-size: 14px;
     outline: none;
     background-color: #fff;
 }
@@ -90,14 +88,11 @@ body {
     color: #b8b8b8;
 }
 
-
 /* Focus */
 .input-group input:focus,
 .input-group select:focus {
     border-color: #e00000;
 }
-
-
 /* Select */
 .input-group select {
     color: #999;
@@ -222,6 +217,25 @@ button:hover {
     margin-top: 18px;
 }
 
+/* USER REGISTRATION */
+.illustration-section {
+    width: 300px;
+    height: 330px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 20px;
+    gap: 50px ;
+}
+
+.illustration-section h2 {
+    text-align: center;
+    font-size: 18px;
+    line-height: 1.45;
+    margin-top: -30px;
+}
+
 @media (max-width: 900px) {
 
     .main-container {
@@ -239,7 +253,7 @@ button:hover {
         width: 100%;
         padding-left: 0;
         margin-top: 30px;
-        min-height: auto;
+        /* min-height: auto; */
     }
 }
 
@@ -252,11 +266,7 @@ button:hover {
 
     .form-grid {
         grid-template-columns: 1fr;
-    }
-
-    .form-box h1 {
-        font-size: 20px;
-    }
+    }   
 
     .subtitle {
         font-size: 12px;

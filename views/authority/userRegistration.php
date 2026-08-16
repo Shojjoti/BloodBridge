@@ -5,20 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>General User Registration</title>
-    <link rel="stylesheet" href="../../public/style/userRegistration.css">
+    <link rel="stylesheet" href="../../public/style/donar&UserRegistration.css">
+    <link rel="stylesheet" href="../../public/style/1.home.css">
 </head>
 
-<body>
+<body>  
+<header class="navbar">
 
-    <!-- Page Title -->
-    <div class="page-title">
-        GENERAL USER REGISTRATION PAGE
+    <div class="brand">
+        BloodBridge               
+            <img src="../../public/images/logo.jpg" alt="BloodBridge Logo">        
     </div>
 
+    <a href="../../views/home/1.home.php" class="back-home">← Back to home</a>
+        
+</header> 
 
+    
     <!-- Main Container -->
     <div class="main-container">
-        <!-- ================= LEFT SIDE ================= -->
+        <!-- LEFT SIDE  -->
         <div class="form-section">
             <div class="form-box">
                 <h1>Create Your Account</h1>
