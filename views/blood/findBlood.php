@@ -73,8 +73,7 @@
             <select class="select">
                 <option>5 KM</option>
                 <option>10 KM</option>
-                <option>25 KM</option>
-                <option>50 KM</option>
+                <option>25 KM</option>                
             </select>
         </div>
 
@@ -82,34 +81,9 @@
     </div>
 
     <div class="card map-card">
-        <svg viewBox="0 0 400 400" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <rect width="400" height="400" fill="#F1F5F9"/>
-            <line x1="0" y1="0" x2="0" y2="400" stroke="#E2E8F0" stroke-width="1"/>
-            <line x1="40" y1="0" x2="40" y2="400" stroke="#E2E8F0" stroke-width="1"/>
-            <line x1="80" y1="0" x2="80" y2="400" stroke="#E2E8F0" stroke-width="1"/>
-            <line x1="120" y1="0" x2="120" y2="400" stroke="#E2E8F0" stroke-width="1"/>
-            <line x1="160" y1="0" x2="160" y2="400" stroke="#E2E8F0" stroke-width="1"/>
-            <line x1="200" y1="0" x2="200" y2="400" stroke="#E2E8F0" stroke-width="1"/>
-            <line x1="240" y1="0" x2="240" y2="400" stroke="#E2E8F0" stroke-width="1"/>
-            <line x1="280" y1="0" x2="280" y2="400" stroke="#E2E8F0" stroke-width="1"/>
-            <line x1="320" y1="0" x2="320" y2="400" stroke="#E2E8F0" stroke-width="1"/>
-            <line x1="360" y1="0" x2="360" y2="400" stroke="#E2E8F0" stroke-width="1"/>
-            <line x1="400" y1="0" x2="400" y2="400" stroke="#E2E8F0" stroke-width="1"/>
-            <line x1="0" y1="0" x2="400" y2="0" stroke="#E2E8F0" stroke-width="1"/>
-            <line x1="0" y1="40" x2="400" y2="40" stroke="#E2E8F0" stroke-width="1"/>
-            <line x1="0" y1="80" x2="400" y2="80" stroke="#E2E8F0" stroke-width="1"/>
-            <line x1="0" y1="120" x2="400" y2="120" stroke="#E2E8F0" stroke-width="1"/>
-            <line x1="0" y1="160" x2="400" y2="160" stroke="#E2E8F0" stroke-width="1"/>
-            <line x1="0" y1="200" x2="400" y2="200" stroke="#E2E8F0" stroke-width="1"/>
-            <line x1="0" y1="240" x2="400" y2="240" stroke="#E2E8F0" stroke-width="1"/>
-            <line x1="0" y1="280" x2="400" y2="280" stroke="#E2E8F0" stroke-width="1"/>
-            <line x1="0" y1="320" x2="400" y2="320" stroke="#E2E8F0" stroke-width="1"/>
-            <line x1="0" y1="360" x2="400" y2="360" stroke="#E2E8F0" stroke-width="1"/>
-            <line x1="0" y1="400" x2="400" y2="400" stroke="#E2E8F0" stroke-width="1"/>
-            <circle cx="200" cy="190" r="30" fill="#FDEEEF"/>
-            <path d="M200 130c22 0 38 17 38 38 0 26-38 62-38 62s-38-36-38-62c0-21 16-38 38-38Z" fill="#D62839"/>
-            <circle cx="200" cy="168" r="12" fill="#ffffff"/>
-        </svg>
+        <iframe
+         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.086797302404!2d-122.402498!3d37.784057!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80858087d0d4b37b%3A0x90c1b8e9e8f4c2a7!2sMoscone%20Center!5e0!3m2!1sen!2sus!4v1710000000000" width="100%" height="500" style="border:0;" allowfullscreen="" loading="lazy">
+        </iframe>
     </div>
 </section>
 
