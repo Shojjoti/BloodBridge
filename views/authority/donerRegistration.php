@@ -23,9 +23,10 @@
         <a href="../../views/home/1.home.php" class="active">
             Home
         </a>
-        <a href="../../views/blood/findBlood.php">
-            Find Blood
+        <a href="../../views/authority/login.php">
+            Log in
         </a>       
+        
     </nav>    
 </header>
 
