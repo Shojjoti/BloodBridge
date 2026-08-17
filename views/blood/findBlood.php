@@ -31,7 +31,7 @@
 
     <div class="nav-actions">        
         <button class="btn btn-outline btn-sm" onclick="window.location.href='../../views/authority/login.php'"> Log in </button>
-        <button class="btn btn-primary btn-sm" onclick="window.location.href='../../views/authority/donerRegistration.php'"> Register </button>    
+        <button class="btn btn-primary btn-sm" onclick="window.location.href='../../views/authority/userRegistration.php'"> Register </button>   
     </div>
 </header>
 
