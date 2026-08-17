@@ -11,14 +11,14 @@ body {
 
 .main-container {
     width: 100%;
-    /* min-height: 100vh; */
+    min-height: 100vh;
 
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 50px;
-
-    padding: 10px;
+    column-gap: 40px;
+    row-gap : 0px;
+    padding: 0 10px;
 }
 
 .form-section {
@@ -28,7 +28,7 @@ body {
 .form-box {
     border: 1px solid #eeeeee;
     border-radius: 12px;
-    padding: 20px 28px 22px;
+    padding: 24px 28px 22px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
@@ -50,7 +50,7 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     column-gap: 20px;
-    row-gap: 15px;
+    row-gap: 10px;
 }
 
 .input-group {
@@ -82,7 +82,6 @@ body {
     background-color: #fff;
 }
 
-
 /* Placeholder */
 .input-group input::placeholder {
     color: #b8b8b8;
@@ -93,6 +92,7 @@ body {
 .input-group select:focus {
     border-color: #e00000;
 }
+
 /* Select */
 .input-group select {
     color: #999;
@@ -184,7 +184,7 @@ button:hover {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding-left: 25px;
+    padding-left: 0 25px;
 }
 
 
@@ -220,20 +220,25 @@ button:hover {
 /* USER REGISTRATION */
 .illustration-section {
     width: 300px;
-    height: 330px;
+    height: 300px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding-top: 20px;
     gap: 50px ;
+}
+.illustration-section img{
+    width: 330px;
+    height:330px;
+    object-fit: contain;
+    display: block;
 }
 
 .illustration-section h2 {
     text-align: center;
     font-size: 18px;
     line-height: 1.45;
-    margin-top: -30px;
+    
 }
 
 @media (max-width: 900px) {
@@ -252,8 +257,7 @@ button:hover {
     .donation-section {
         width: 100%;
         padding-left: 0;
-        margin-top: 30px;
-        /* min-height: auto; */
+        margin-top: 30px;        
     }
 }
 
@@ -271,5 +275,6 @@ button:hover {
     .subtitle {
         font-size: 12px;
     }
+    
 
 }
