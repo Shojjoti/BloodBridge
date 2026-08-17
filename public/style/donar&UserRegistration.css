@@ -11,7 +11,7 @@ body {
 
 .main-container {
     width: 100%;
-    min-height: 100vh;
+    /* min-height: 100vh; */
 
     display: flex;
     justify-content: center;
@@ -28,7 +28,7 @@ body {
 .form-box {
     border: 1px solid #eeeeee;
     border-radius: 12px;
-    padding: 25px 28px 22px;
+    padding: 20px 28px 22px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
