@@ -44,7 +44,7 @@
         <div class="search-filter-badge-col">
             <span class="badge badge-red">Blood group: O+</span>
             <div>
-                <a href="findBlood.php" class="change-search-link">Change search</a>
+                <a href="../../views/blood/findBlood.php" class="change-search-link">Change search</a>
             </div>
         </div>
     </div>

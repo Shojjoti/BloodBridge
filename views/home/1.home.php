@@ -270,8 +270,6 @@
 
         </div>
 
-
-
         <!-- CONTACT -->
         <div class="footer-column">
             <h4> Contact Us </h4>
