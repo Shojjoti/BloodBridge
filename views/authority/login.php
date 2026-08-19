@@ -35,36 +35,38 @@
                 <h1 class="auth-h1">Welcome Back</h1>
                 <p class="auth-p">Log in to your account</p>
 
-                <div class="field-block">
-                    <label class="field-label">Gmail</label>
-                    <input class="field-input" placeholder="example@gmail.com">
-                </div>
-
-                <div class="field-block">
-                    <label class="field-label">Password</label>
-                    <div class="field-input-wrap">
-                        <input class="field-input" type="password" placeholder="Enter your password">
-                        <button class="eye-btn">
-                            <img src="/BloodBridge/public/images/eye.png" alt="Toggle password" width="18" height="18">
-                        </button>
+                <form action="" method="POST" novalidate>
+                    <div class="field-block">
+                        <label class="field-label">Gmail</label>
+                        <input class="field-input" type="email" name="email" placeholder="example@gmail.com">
                     </div>
-                </div>
 
-                <div class="forgot-row">
-                    <label class="remember-label">
-                        <input type="checkbox">
-                        Remember me
-                    </label>
-                    <a href="forgetPassword.php" class="auth-link">Forgot password?</a>
-                </div>
+                    <div class="field-block">
+                        <label class="field-label">Password</label>
+                        <div class="field-input-wrap">
+                            <input class="field-input" type="password" name="password" placeholder="Enter your password">
+                            <button class="eye-btn" type="button">
+                                <img src="/BloodBridge/public/images/eye.png" alt="Toggle password" width="18" height="18">
+                            </button>
+                        </div>
+                    </div>
 
-                <button class="common-btn">Log in</button>
+                    <div class="forgot-row">
+                        <label class="remember-label">
+                            <input type="checkbox" name="remember">
+                            Remember me
+                        </label>
+                        <a href="forgetPassword.php" class="auth-link">Forgot password?</a>
+                    </div>
+
+                    <button class="common-btn" type="submit" name="login">Log in</button>
+                </form>
 
                 <p class="auth-bottom-text">Don't have an account?</p>
                 <div class="register-row">
-                    <button class="btn-outline" onclick="location.href='donerRegistration.php'">Register as
+                    <button class="btn-outline" type="button" onclick="location.href='donerRegistration.php'">Register as
                         Donor</button>
-                    <button class="btn-secondary" onclick="location.href='userRegistration.php'">Register as
+                    <button class="btn-secondary" type="button" onclick="location.href='userRegistration.php'">Register as
                         User</button>
                 </div>
             </div>
