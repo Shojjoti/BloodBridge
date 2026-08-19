@@ -11,15 +11,19 @@ a{
     text-decoration: none;
     color: inherit;
 }
+html, body{
+    height: 100%;
+}
 body{
     background-color: #F8FAFC;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 .container{
     max-width: 1200px;
     margin: auto;
 }
-
-/* ---------- buttons ---------- */
 .common-btn{
     background-color: #D62839;
     padding: 14px 15px;
@@ -71,20 +75,24 @@ body{
     background-color: #eef1f4;
 }
 
+/* ---------- navbar ---------- */
+/* .navbar, .back-home -> login.php only (top header with "Back to home") */
 .navbar{
   display:flex;align-items:center;justify-content:space-between;
   padding:18px 32px;background:#fff;border-bottom:1px solid gray;
   position:sticky;top:0;z-index:50;
+  flex-shrink: 0;
 }
-
-/* ---------- auth layout ---------- */
 .auth-parent{
-    min-height: 100vh;
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    padding: 90px 24px 40px;
+    padding: 16px 24px;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 .back-home{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:13px;color: gray;}
 .back-home:hover{color: red;}
@@ -93,7 +101,7 @@ body{
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 48px 24px;
+    padding: 16px;
 }
 .auth-box{
     width: 100%;
@@ -111,7 +119,7 @@ body{
     background-color: white;
     border: 1px solid #E5E7EB;
     border-radius: 16px;
-    padding: 40px 36px;
+    padding: 28px 32px;
     box-shadow: 0 10px 30px rgba(31, 41, 55, 0.08), 0 2px 8px rgba(31, 41, 55, 0.04);
 }
 .auth-right{
@@ -136,26 +144,22 @@ body{
     margin: auto;
 }
 .auth-icon{
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 12px;
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 8px;
 }
-
-/* ---------- headings ---------- */
 .auth-h1{
-    font-size: 26px;
+    font-size: 22px;
     font-weight: bold;
     color: #1F2937;
 }
 .auth-p{
     color: #687280;
-    margin-top: 6px;
-    margin-bottom: 28px;
-}
-
-/* ---------- form fields ---------- */
-.field-block{
+    margin-top: 4px;
     margin-bottom: 18px;
+}
+.field-block{
+    margin-bottom: 12px;
     text-align: left;
 }
 .field-label{
@@ -194,11 +198,9 @@ body{
     color: #687280;
     display: flex;
 }
-
-/* ---------- bottom row text ---------- */
 .auth-bottom-text{
     text-align: center;
-    margin: 18px 0;
+    margin: 12px 0;
     color: #687280;
 }
 .auth-link{
@@ -227,13 +229,11 @@ body{
     height: 16px;
     accent-color: #D62839;
 }
-
-/* ---------- stepper (reset password page) ---------- */
 .step-row{
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    margin-bottom: 36px;
+    margin-bottom: 20px;
 }
 .step-item{
     display: flex;
@@ -303,8 +303,6 @@ body{
         border-radius: 14px;
     }
 }
-
-/* ---------- login card (single card, form left / picture right) ---------- */
 .login-card{
     display: flex;
     width: 100%;
@@ -342,7 +340,6 @@ body{
     max-width: 240px;
     margin: auto;
 }
-
 @media (max-width: 700px){
     .login-card{
         flex-direction: column;
