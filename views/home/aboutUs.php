@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us</title>
     <link rel="stylesheet" href="../../public/style/aboutUs.css">
+    <link rel="stylesheet" href="../../public/style/1.home.css">
 </head>
 <body>
 <header class="navbar">
