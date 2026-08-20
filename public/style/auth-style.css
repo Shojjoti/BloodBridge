@@ -74,9 +74,6 @@ body{
 .btn-secondary:hover{
     background-color: #eef1f4;
 }
-
-/* ---------- navbar ---------- */
-/* .navbar, .back-home -> login.php only (top header with "Back to home") */
 .navbar{
   display:flex;align-items:center;justify-content:space-between;
   padding:18px 32px;background:#fff;border-bottom:1px solid gray;
