@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login · BloodBridge</title>
     <link rel="stylesheet" href="../../public/style/auth-style.css">
-    <link rel="stylesheet" href="../../public/style/1.home.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -46,7 +45,7 @@
                         <div class="field-input-wrap">
                             <input class="field-input" type="password" name="password" placeholder="Enter your password">
                             <button class="eye-btn" type="button">
-                                <img src="/BloodBridge/public/images/eye.png" alt="Toggle password" width="18" height="18">
+                                <img src="../../public/images/eye.png" alt="Toggle password" width="18" height="18">
                             </button>
                         </div>
                     </div>
@@ -72,7 +71,7 @@
             </div>
 
             <div class="login-card-right">
-                <img src="/BloodBridge/public/images/blood_drop.png" alt="Blood Drop" width="180" height="180">
+                <img src="../../public/images/blood_drop.png" alt="Blood Drop" width="180" height="180">
                 <div>
                     <h2>Every Drop Counts</h2>
                     <p>Sign in to manage requests, track donations, and stay connected.</p>

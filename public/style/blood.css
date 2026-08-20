@@ -13,6 +13,80 @@
   --shadow: 0 1px 3px rgba(31, 41, 55, 0.08), 0 1px 2px rgba(31, 41, 55, 0.04);
 }
 
+/* ---------- Common Utility Styles ---------- */
+.card {
+  background: #fff;
+  border: 1px solid var(--gray-line);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+.badge-success { background: #DCFCE7; color: var(--success); }
+.badge-red { background: #FDEEEF; color: var(--red); }
+.badge-gray { background: #F1F5F9; color: var(--gray); }
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--dark);
+}
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.input, .select {
+  width: 100%;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--dark);
+  background: #fff;
+  border: 1px solid var(--gray-line);
+  border-radius: 8px;
+  padding: 11px 14px;
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease;
+  appearance: none;
+}
+.input::placeholder { color: #9CA3AF; }
+.input:focus, .select:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(214, 40, 57, 0.12);
+}
+.select {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23687280' stroke-width='2'><path d='M4 6l4 4 4-4'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+.input-icon {
+  position: absolute;
+  right: 12px;
+  color: var(--gray);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  display: flex;
+}
+
+.btn-block { width: 100%; }
+
 /* ---------- Find Blood Layout ---------- */
 .find-blood-container {
   display: flex;
