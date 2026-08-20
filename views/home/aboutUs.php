@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us</title>
-    <link rel="stylesheet" href="../../public/style/1.home.css">
+    <link rel="stylesheet" href="../../public/style/aboutUs.css">
 </head>
 <body>
 <header class="navbar">
