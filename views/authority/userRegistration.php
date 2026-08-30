@@ -43,7 +43,7 @@ unset($_SESSION['errors']);
                     <!-- Full Name -->
                     <div class="input-group">
                         <label for="fullName">Full Name</label>
-                        <input type="text" id="fullName" name="fullname" placeholder="Enter your full name">
+                        <input type="text" id="fullName" name="fullName" placeholder="Enter your full name">
 
                         <span class="error-message" id="fullNameError"></span>
                     </div>

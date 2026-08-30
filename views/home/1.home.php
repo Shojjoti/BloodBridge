@@ -27,6 +27,10 @@
         <a href="../../views/authority/donerRegistration.php">
             Become a Donor
         </a>
+
+        <a href="../../views/authority/donorProfile.php" class="profile-button" title="My Profile">
+            profile
+        </a>
     </nav>
 
 
@@ -302,7 +306,6 @@
         </div>
     </div>
 </footer>
-
 
 </body>
 </html>

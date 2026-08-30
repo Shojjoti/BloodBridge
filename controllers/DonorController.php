@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['bloodGroup'] = 'Please select a valid blood group.';
     }
 
-    // Validate Last Donation Date (optional, but not in future)
+    // Validate Last Donation Date 
     if ($lastDonationDate !== '') {
         $today = date('Y-m-d');
         if ($lastDonationDate > $today) {
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Validate Previous Donations (optional, but must be valid if given)
+    // Validate Previous Donations 
     if ($previousDonations !== '') {
         if (!ctype_digit($previousDonations)) {
             $errors['previousDonations'] = 'Enter a valid number (0 or more).';
@@ -95,11 +95,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // ---- No validation errors past this point ----
-
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);    
 
-    // On success — popup on login page, just like the general user registration
+    // On success  
     $_SESSION['registration_success'] = true;
     $_SESSION['registered_name'] = $fullName;
     header('Location: ../views/authority/login.php');
