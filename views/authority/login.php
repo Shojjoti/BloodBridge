@@ -9,6 +9,17 @@ if (isset($_SESSION['registration_success']) && $_SESSION['registration_success'
     unset($_SESSION['registration_success']);
     unset($_SESSION['registered_name']);
 }
+
+$showResetSuccessPopup = false;
+if (isset($_SESSION['password_reset_success']) && $_SESSION['password_reset_success'] === true) {
+    $showResetSuccessPopup = true;
+    unset($_SESSION['password_reset_success']);
+}
+
+$errors = $_SESSION['errors'] ?? [];
+$old = $_SESSION['old'] ?? [];
+unset($_SESSION['errors']);
+unset($_SESSION['old']);
 ?>
 
 <!DOCTYPE html>
@@ -46,20 +57,22 @@ if (isset($_SESSION['registration_success']) && $_SESSION['registration_success'
                 <h1 class="auth-h1">Welcome Back</h1>
                 <p class="auth-p">Log in to your account</p>
 
-                <form action="" method="POST" novalidate>
+                <form id="loginForm" action="../../controllers/AuthController.php" method="POST" novalidate>
                     <div class="field-block">
                         <label class="field-label">Gmail</label>
-                        <input class="field-input" type="email" name="email" placeholder="example@gmail.com">
+                        <input class="field-input" type="email" id="email" name="email" placeholder="example@gmail.com" value="<?php echo htmlspecialchars($old['email'] ?? ''); ?>">
+                        <span class="error-message" id="emailError"><?php echo htmlspecialchars($errors['email'] ?? ''); ?></span>
                     </div>
 
                     <div class="field-block">
                         <label class="field-label">Password</label>
                         <div class="field-input-wrap">
-                            <input class="field-input" type="password" name="password" placeholder="Enter your password">
+                            <input class="field-input" type="password" id="password" name="password" placeholder="Enter your password">
                             <button class="eye-btn" type="button">
                                 <img src="/BloodBridge/public/images/eye.png" alt="Toggle password" width="18" height="18">
                             </button>
                         </div>
+                        <span class="error-message" id="passwordError"><?php echo htmlspecialchars($errors['password'] ?? ''); ?></span>
                     </div>
 
                     <div class="forgot-row">
@@ -67,7 +80,7 @@ if (isset($_SESSION['registration_success']) && $_SESSION['registration_success'
                             <input type="checkbox" name="remember">
                             Remember me
                         </label>
-                        <a href="forgetPassword.php" class="auth-link">Forgot password?</a>
+                        <a href="resetPassowrd.php" class="auth-link">Forgot password?</a>
                     </div>
 
                     <button class="common-btn" type="submit" name="login">Log in</button>
@@ -107,6 +120,23 @@ if (isset($_SESSION['registration_success']) && $_SESSION['registration_success'
             });
         </script>
     <?php endif; ?>
+
+    <?php if ($showResetSuccessPopup): ?>
+        <div id="resetSuccessPopupOverlay" class="popup-overlay">
+            <div class="popup-box">
+                <h2>✅ Password Updated!</h2>
+                <p>Your password has been reset successfully. Please log in with your new password.</p>
+                <button id="closeResetPopupBtn">Continue</button>
+            </div>
+        </div>
+        <script>
+            document.getElementById('closeResetPopupBtn').addEventListener('click', function() {
+                document.getElementById('resetSuccessPopupOverlay').style.display = 'none';
+            });
+        </script>
+    <?php endif; ?>
+
+    <script src="../../public/js/login.js"></script>
 </body>
 
 </html>
