@@ -1,3 +1,16 @@
+<?php
+session_start();
+$showSuccessPopup = false;
+$registeredName = '';
+
+if (isset($_SESSION['registration_success']) && $_SESSION['registration_success'] === true) {
+    $showSuccessPopup = true;
+    $registeredName = $_SESSION['registered_name'] ?? '';
+    unset($_SESSION['registration_success']);
+    unset($_SESSION['registered_name']);
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -15,20 +28,18 @@
 </head>
 
 <body>
-<header class="navbar">
+    <header class="navbar">
 
-    <div class="brand">
-        BloodBridge               
-            <img src="../../public/images/logo.jpg" alt="BloodBridge Logo">        
-    </div>
+        <div class="brand">
+            BloodBridge
+            <img src="../../public/images/logo.jpg" alt="BloodBridge Logo">
+        </div>
 
-    <a href="../../views/home/1.home.php" class="back-home">← Back to home</a>
-        
-</header> 
+        <a href="../../views/home/1.home.php" class="back-home">← Back to home</a>
 
+    </header>
 
     <div class="auth-parent" style="align-items: center; justify-content: center;">
-        
 
         <div class="login-card">
             <div class="login-card-left">
@@ -80,6 +91,22 @@
             </div>
         </div>
     </div>
+
+    <!-- validation -->
+    <?php if ($showSuccessPopup): ?>
+        <div id="successPopupOverlay" class="popup-overlay">
+            <div class="popup-box">
+                <h2>🎉 Registration Successful!</h2>
+                <p>Welcome, <strong><?php echo htmlspecialchars($registeredName); ?></strong>! You can now log in.</p>
+                <button id="closePopupBtn">Continue</button>
+            </div>
+        </div>
+        <script>
+            document.getElementById('closePopupBtn').addEventListener('click', function() {
+                document.getElementById('successPopupOverlay').style.display = 'none';
+            });
+        </script>
+    <?php endif; ?>
 </body>
 
 </html>
