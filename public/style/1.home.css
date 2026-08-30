@@ -24,6 +24,7 @@ body{
   font-size:14px;
   line-height:1.5;  
 }
+
 a{
   color:inherit;text-decoration:none;
 }
@@ -343,6 +344,54 @@ p{margin:0;}
   .stat-item{flex:1 1 100%;}
   .footer-container{grid-template-columns:1fr;}
   .footer-bottom-inner{flex-direction:column;gap:10px;text-align:center;}
+}
+
+
+/* FLOATING PROFILE BUTTON */
+
+.profile-button {
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+    width: 55px;
+    height: 55px;
+
+    background-color: #ffffff;
+
+    border: 2px solid #e60000;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+    cursor: pointer;
+
+    z-index: 1000;
+
+    transition: all 0.3s ease;
+}
+
+
+.profile-button img {
+    width: 30px;
+    height: 30px;
+
+    object-fit: contain;
+}
+
+
+/* Hover Effect */
+
+.profile-button:hover {
+    background-color: #e60000;
+
+    transform: scale(1.08);
+
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.20);
 }
 
 
