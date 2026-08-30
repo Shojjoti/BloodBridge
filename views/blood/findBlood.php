@@ -1,3 +1,34 @@
+<?php
+session_start();
+
+$errors = $_SESSION['errors'] ?? [];
+unset($_SESSION['errors']);
+
+$oldSearch = $_SESSION['old_search'] ?? [];
+unset($_SESSION['old_search']);
+
+// Prefill from session old search or persistent cookies
+$prefillGroup    = $oldSearch['blood_group'] ?? ($_COOKIE['bb_last_blood_group'] ?? '');
+$prefillLocation = $oldSearch['location'] ?? ($_COOKIE['bb_last_location'] ?? '');
+$prefillRadius   = $oldSearch['radius'] ?? ($_COOKIE['bb_last_radius'] ?? '5');
+$prefillLat      = $oldSearch['lat'] ?? '';
+$prefillLng      = $oldSearch['lng'] ?? '';
+
+// Recent searches from cookie
+$recentSearches = [];
+if (!empty($_COOKIE['bb_recent_searches'])) {
+    $decoded = json_decode($_COOKIE['bb_recent_searches'], true);
+    if (is_array($decoded)) {
+        $recentSearches = $decoded;
+    }
+}
+
+// User session state
+$isLoggedIn = isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true;
+$userName   = $_SESSION['user_name'] ?? '';
+$userRole   = $_SESSION['user_role'] ?? 'user';
+$profileUrl = $userRole === 'donor' ? '../authority/donorProfile.php' : '../authority/userProfile.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -30,8 +61,15 @@
     </nav>
 
     <div class="nav-actions">        
-        <button class="btn btn-outline btn-sm" onclick="window.location.href='../../views/authority/login.php'"> Log in </button>
-        <button class="btn btn-primary btn-sm" onclick="window.location.href='../../views/authority/userRegistration.php'"> Register </button>   
+        <?php if ($isLoggedIn): ?>
+            <a href="<?php echo htmlspecialchars($profileUrl); ?>" class="user-menu-badge" style="text-decoration:none;">
+                <span class="user-avatar-sm"><?php echo htmlspecialchars(strtoupper(substr($userName, 0, 2))); ?></span>
+                <span><?php echo htmlspecialchars($userName); ?></span>
+            </a>
+        <?php else: ?>
+            <button class="btn btn-outline btn-sm" onclick="window.location.href='../../views/authority/login.php'"> Log in </button>
+            <button class="btn btn-primary btn-sm" onclick="window.location.href='../../views/authority/userRegistration.php'"> Register </button>   
+        <?php endif; ?>
     </div>
 </header>
 
@@ -40,44 +78,85 @@
         <h1 class="find-blood-title">Find Blood Donors</h1>
         <p class="find-blood-subtitle">Search for available blood donors near you</p>
 
-        <div class="field">
-            <label>Blood group</label>
-            <select class="select">
-                <option value="">Select blood group</option>
-                <option>A+</option>
-                <option>A-</option>
-                <option>B+</option>
-                <option>B-</option>
-                <option>AB+</option>
-                <option>AB-</option>
-                <option>O+</option>
-                <option>O-</option>
-            </select>
-        </div>
-
-        <div class="field">
-            <label>Your location</label>
-            <div class="input-wrap">
-                <input class="input" placeholder="Use my current location">
-                <span class="input-icon">
-                    <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="3"></circle>
-                        <path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path>
-                    </svg>
-                </span>
+        <form id="findBloodForm" action="../../controllers/BloodSearchController.php" method="GET" novalidate>
+            <!-- Blood Group -->
+            <div class="field">
+                <label for="bloodGroup">Blood group</label>
+                <select class="select <?php echo isset($errors['bloodGroup']) ? 'invalid' : ''; ?>" id="bloodGroup" name="blood_group">
+                    <option value="">Select blood group</option>
+                    <?php 
+                    $groups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+                    foreach ($groups as $g): 
+                    ?>
+                        <option value="<?php echo $g; ?>" <?php echo ($prefillGroup === $g) ? 'selected' : ''; ?>>
+                            <?php echo $g; ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <span class="error-message" id="bloodGroupError"><?php echo htmlspecialchars($errors['bloodGroup'] ?? ''); ?></span>
             </div>
-        </div>
 
-        <div class="field">
-            <label>Search radius</label>
-            <select class="select">
-                <option>5 KM</option>
-                <option>10 KM</option>
-                <option>25 KM</option>                
-            </select>
-        </div>
+            <!-- Location with Geolocation Support -->
+            <div class="field">
+                <label for="location">Your location</label>
+                <div class="input-wrap">
+                    <input 
+                        type="text" 
+                        class="input <?php echo isset($errors['location']) ? 'invalid' : ''; ?>" 
+                        id="location" 
+                        name="location" 
+                        placeholder="Enter area, city or click GPS icon" 
+                        value="<?php echo htmlspecialchars($prefillLocation); ?>"
+                    >
+                    <input type="hidden" id="lat" name="lat" value="<?php echo htmlspecialchars($prefillLat); ?>">
+                    <input type="hidden" id="lng" name="lng" value="<?php echo htmlspecialchars($prefillLng); ?>">
+                    
+                    <button type="button" class="input-icon" id="geoBtn" title="Use current GPS location">
+                        <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path>
+                        </svg>
+                    </button>
+                </div>
+                <span class="error-message" id="locationError"><?php echo htmlspecialchars($errors['location'] ?? ''); ?></span>
+            </div>
 
-        <button class="btn btn-primary btn-block" onclick="window.location.href='searchResult.php'">Search Donors</button>
+            <!-- Search Radius -->
+            <div class="field">
+                <label for="radius">Search radius</label>
+                <select class="select <?php echo isset($errors['radius']) ? 'invalid' : ''; ?>" id="radius" name="radius">
+                    <option value="5" <?php echo ($prefillRadius == '5') ? 'selected' : ''; ?>>5 KM</option>
+                    <option value="10" <?php echo ($prefillRadius == '10') ? 'selected' : ''; ?>>10 KM</option>
+                    <option value="25" <?php echo ($prefillRadius == '25') ? 'selected' : ''; ?>>25 KM</option>                
+                </select>
+                <span class="error-message" id="radiusError"><?php echo htmlspecialchars($errors['radius'] ?? ''); ?></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Search Donors</button>
+        </form>
+
+        <!-- Recent Searches from Cookie -->
+        <?php if (!empty($recentSearches)): ?>
+            <div class="recent-searches-box">
+                <div class="recent-searches-title">Recent Searches (Cookies)</div>
+                <div class="recent-chips-list">
+                    <?php foreach ($recentSearches as $item): ?>
+                        <button 
+                            type="button" 
+                            class="recent-chip" 
+                            data-group="<?php echo htmlspecialchars($item['group']); ?>" 
+                            data-location="<?php echo htmlspecialchars($item['location']); ?>" 
+                            data-radius="<?php echo htmlspecialchars($item['radius']); ?>"
+                        >
+                            <span class="chip-group"><?php echo htmlspecialchars($item['group']); ?></span>
+                            <span>•</span>
+                            <span><?php echo htmlspecialchars($item['location']); ?></span>
+                            <span>(<?php echo htmlspecialchars($item['radius']); ?>km)</span>
+                        </button>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endif; ?>
     </div>
 
     <div class="card map-card">
@@ -168,5 +247,6 @@
     </div>
 </footer>
 
+<script src="../../public/js/blood-search.js"></script>
 </body>
 </html>
