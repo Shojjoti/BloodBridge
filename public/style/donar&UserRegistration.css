@@ -287,3 +287,16 @@ button:hover {
     
 
 }
+
+
+/* validation */
+.error-message {
+    color: #d10000;
+    font-size: 0.8rem;
+    display: block;
+    margin-top: 4px;
+    min-height: 16px;
+}
+.input-group input.invalid {
+    border-color: #d10000;
+}

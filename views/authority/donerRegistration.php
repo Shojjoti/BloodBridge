@@ -1,5 +1,12 @@
+<?php
+session_start();
+$errors = $_SESSION['errors'] ?? [];
+unset($_SESSION['errors']);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,26 +18,26 @@
 
 <body>
 
-<header class="navbar">
+    <header class="navbar">
 
-    <div class="brand">
-        BloodBridge               
-            <img src="../../public/images/logo.jpg" alt="BloodBridge Logo">        
-    </div>
+        <div class="brand">
+            BloodBridge
+            <img src="../../public/images/logo.jpg" alt="BloodBridge Logo">
+        </div>
 
 
-    <nav class="nav-links">
-        <a href="../../views/home/1.home.php" class="active">
-            Home
-        </a>
-        <a href="../../views/authority/login.php">
-            Log in
-        </a>       
-        
-    </nav>    
-</header>
+        <nav class="nav-links">
+            <a href="../../views/home/1.home.php" class="active">
+                Home
+            </a>
+            <a href="../../views/authority/login.php">
+                Log in
+            </a>
 
-<div class="main-container">
+        </nav>
+    </header>
+
+    <div class="main-container">
         <!-- LEFT SIDE -->
         <div class="form-section">
             <div class="form-box">
@@ -39,37 +46,40 @@
                     Fill in your information to register as a donor
                 </p>
 
-                <form>
+                <form id="donorRegisterForm" action="../../controllers/DonorController.php" method="POST" novalidate>
                     <div class="form-grid">
                         <!-- Full Name -->
                         <div class="input-group">
-                            <label>Full Name</label>
-                            <input type="text" placeholder="Enter your full name">
+                            <label for="fullName">Full Name</label>
+                            <input type="text" id="fullName" name="fullName" placeholder="Enter your full name">
+                            <span class="error-message" id="fullNameError"></span>
                         </div>
 
                         <!-- NID -->
                         <div class="input-group">
-                            <label>NID Number</label>
-                            <input type="text" placeholder="Enter your NID number">
+                            <label for="nid">NID Number</label>
+                            <input type="text" id="nid" name="nid" placeholder="Enter your NID number">
+                            <span class="error-message" id="nidError"></span>
                         </div>
 
                         <!-- Phone -->
                         <div class="input-group">
-                            <label>Phone Number</label>
-                            <input type="text" placeholder="01XXXXXXXXX">
+                            <label for="phone">Phone Number</label>
+                            <input type="text" id="phone" name="phone" placeholder="01XXXXXXXXX">
+                            <span class="error-message" id="phoneError"></span>
                         </div>
 
                         <!-- Email -->
                         <div class="input-group">
-                            <label>Email</label>
-                            <input type="email" placeholder="example@gmail.com">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" placeholder="example@gmail.com">
+                            <span class="error-message" id="emailError"></span>
                         </div>
 
                         <!-- Blood Group -->
                         <div class="input-group">
-                            <label>Blood Group</label>
-
-                            <select>
+                            <label for="bloodGroup">Blood Group</label>
+                            <select id="bloodGroup" name="bloodGroup">
                                 <option value="">Select blood group</option>
                                 <option>A+</option>
                                 <option>A-</option>
@@ -80,57 +90,56 @@
                                 <option>O+</option>
                                 <option>O-</option>
                             </select>
+                            <span class="error-message" id="bloodGroupError"></span>
                         </div>
 
                         <!-- Last Donation Date -->
                         <div class="input-group">
-                            <label>Last Donation Date</label>
-                            <input type="date">
+                            <label for="lastDonationDate">Last Donation Date</label>
+                            <input type="date" id="lastDonationDate" name="lastDonationDate">
+                            <span class="error-message" id="lastDonationDateError"></span>
                         </div>
 
                         <!-- Previous Donations -->
                         <div class="input-group">
-                            <label>Number of Previous Donations</label>
-                            <input type="number" placeholder="Enter number">
+                            <label for="previousDonations">Number of Previous Donations</label>
+                            <input type="number" id="previousDonations" name="previousDonations" placeholder="Enter number" min="0">
+                            <span class="error-message" id="previousDonationsError"></span>
                         </div>
 
                         <!-- Password -->
                         <div class="input-group">
-                            <label>Password</label>
-
+                            <label for="password">Password</label>
                             <div class="password-box">
-                                <input type="password" placeholder="Enter password">
+                                <input type="password" id="password" name="password" placeholder="Enter password">
                                 <span>◉</span>
                             </div>
+                            <span class="error-message" id="passwordError"></span>
                         </div>
 
                         <!-- Confirm Password -->
                         <div class="input-group">
-                            <label>Confirm Password</label>
-
+                            <label for="confirmPassword">Confirm Password</label>
                             <div class="password-box">
-                                <input type="password" placeholder="Confirm password">
+                                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm password">
                                 <span>◉</span>
                             </div>
+                            <span class="error-message" id="confirmPasswordError"></span>
                         </div>
-
                     </div>
 
                     <!-- Terms -->
                     <div class="terms">
-                        <input type="checkbox" id="terms">
-
+                        <input type="checkbox" id="terms" name="terms">
                         <label for="terms">
                             I agree to the
                             <span>terms and conditions</span>
                         </label>
+                        <span class="error-message" id="termsError"></span>
                     </div>
 
                     <!-- Button -->
-                    <button type="submit">
-                        Register as Donor
-                    </button>
-
+                    <button type="submit">Register as Donor</button>
                 </form>
 
                 <p class="login-text">
@@ -151,20 +160,23 @@
 
             <div>
                 <h2>
-                Donate Blood<br>
-                Save Life
+                    Donate Blood<br>
+                    Save Life
                 </h2>
 
                 <p>
-                Your donation can bring<br>
-                someone back to life.
+                    Your donation can bring<br>
+                    someone back to life.
                 </p>
             </div>
-            
+
 
         </div>
 
     </div>
 
+    <script src="../../public/js/donorReg.js"></script>
+
 </body>
+
 </html>
