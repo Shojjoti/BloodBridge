@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once __DIR__ . '/../models/donor.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -95,7 +96,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);    
+    // Check for duplicate email / NID before inserting
+    if (findDonorByEmail($email)) {
+        $errors['email'] = 'An account with this email already exists.';
+    }
+    if (findDonorByNid($nid)) {
+        $errors['nid'] = 'An account with this NID already exists.';
+    }
+    if (!empty($errors)) {
+        $_SESSION['errors'] = $errors;
+        header('Location: ../views/authority/donerRegistration.php');
+        exit;
+    }
+
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+    createDonor($fullName, $nid, $phone, $email, $bloodGroup, $lastDonationDate, $previousDonations, $hashedPassword);
 
     // On success  
     $_SESSION['registration_success'] = true;
