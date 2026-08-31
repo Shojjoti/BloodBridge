@@ -79,7 +79,7 @@ unset($_SESSION['old']);
                             <input type="checkbox" name="remember">
                             Remember me
                         </label>
-                        <a href="resetPassowrd.php" class="auth-link">Forgot password?</a>
+                        <a href="resetPassword.php" class="auth-link">Forgot password?</a>
                     </div>
 
                     <button class="common-btn" type="submit" name="login">Log in</button>
