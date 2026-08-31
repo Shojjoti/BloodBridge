@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once __DIR__ . '/../models/user.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -51,10 +52,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    // Check for duplicate email before inserting
+    if (findUserByEmail($email)) {
+        $errors['email'] = 'An account with this email already exists.';
+        $_SESSION['errors'] = $errors;
+        $_SESSION['old'] = ['fullName' => $fullName, 'email' => $email];
+        header('Location: ../views/authority/userRegistration.php');
+        exit;
+    }
+
     // Hash the password before storing it
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    
+    createUser($fullName, $email, $hashedPassword);
+
     // On success
     $_SESSION['registration_success'] = true;
     $_SESSION['registered_name'] = $fullName;
