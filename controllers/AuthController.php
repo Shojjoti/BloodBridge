@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (!empty($errors)) {
             $_SESSION['errors'] = $errors;
-            header('Location: ../views/authority/resetPassowrd.php');
+            header('Location: ../views/authority/resetPassword.php');
             exit;
         }
 

@@ -12,8 +12,8 @@ unset($_SESSION['errors']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Become a Blood Donor</title>
-    <link rel="stylesheet" href="../../public/style/donar&UserRegistration.css">
     <link rel="stylesheet" href="../../public/style/1.home.css">
+    <link rel="stylesheet" href="../../public/style/donar&UserRegistration.css">
 </head>
 
 <body>
