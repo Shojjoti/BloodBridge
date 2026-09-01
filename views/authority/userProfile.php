@@ -6,10 +6,22 @@
 
     <title>User Profile</title>
 
-    <link rel="stylesheet" href="profile.css">
+    <link rel="stylesheet" href="../../public/style/profile.css">
+    <link rel="stylesheet" href="../../public/style/1.home.css">
 </head>
 
 <body>
+
+    <header class="navbar">
+
+        <div class="brand">
+            BloodBridge
+            <img src="../../public/images/logo.jpg" alt="BloodBridge Logo">
+        </div>
+
+        <a href="../../views/home/1.home.php" class="back-home">← Back to home</a>
+
+    </header>
 
     <div class="profile-container">
 
