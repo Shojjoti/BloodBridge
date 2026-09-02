@@ -1,6 +1,5 @@
 <?php
 session_start();
-require '../../config/db.php'; // তোমার DB connection ফাইলের path ঠিক করে দিও
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../views/auth/login.php");
@@ -9,13 +8,17 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-$stmt = $pdo->prepare("SELECT * FROM donors WHERE id = ?");
-$stmt->execute([$user_id]);
-$donor = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$donor) {
-    die("Donor not found.");
-}
+$donor = [
+    'full_name' => '',
+    'nid_number' => '',
+    'phone' => '',
+    'email' => '',
+    'blood_group' => '',
+    'last_donation_date' => '',
+    'total_donations' => '',
+    'status' => '',
+];
 ?>
 <!DOCTYPE html>
 <html lang="en">
