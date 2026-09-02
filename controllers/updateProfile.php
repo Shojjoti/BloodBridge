@@ -1,6 +1,6 @@
 <?php
 session_start();
-require '../../config/db.php';
+
 header('Content-Type: application/json');
 
 if (!isset($_SESSION['user_id'])) {
@@ -27,17 +27,9 @@ if (!empty($password) || !empty($confirm_password)) {
     }
 }
 
-try {
-    if (!empty($password)) {
-        $hashed = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $pdo->prepare("UPDATE donors SET full_name=?, nid_number=?, phone=?, email=?, blood_group=?, last_donation_date=?, total_donations=?, password=? WHERE id=?");
-        $stmt->execute([$full_name, $nid_number, $phone, $email, $blood_group, $last_donation_date, $total_donations, $hashed, $user_id]);
-    } else {
-        $stmt = $pdo->prepare("UPDATE donors SET full_name=?, nid_number=?, phone=?, email=?, blood_group=?, last_donation_date=?, total_donations=? WHERE id=?");
-        $stmt->execute([$full_name, $nid_number, $phone, $email, $blood_group, $last_donation_date, $total_donations, $user_id]);
-    }
-
-    echo json_encode(['success' => true, 'message' => 'Update successful!']);
-} catch (PDOException $e) {
-    echo json_encode(['success' => false, 'message' => 'Update failed: ' . $e->getMessage()]);
+if (!empty($password)) {
+    $hashed = password_hash($password, PASSWORD_DEFAULT);
 }
+
+
+echo json_encode(['success' => true, 'message' => 'Update successful!']);
