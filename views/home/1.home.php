@@ -7,6 +7,8 @@
     <title>Home · BloodBridge</title>
     
     <link rel="stylesheet" href="../../public/style/1.home.css">
+    <link rel="stylesheet" href="../../public/style/profile.css">
+
 </head>
 <body>
 <header class="navbar">
