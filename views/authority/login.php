@@ -56,7 +56,7 @@ unset($_SESSION['old']);
                 <h1 class="auth-h1">Welcome Back</h1>
                 <p class="auth-p">Log in to your account</p>
 
-                <form id="loginForm" action="../../controllers/AuthController.php" method="POST" novalidate>
+                <form id="loginForm" action="/BloodBridge/public/index.php?page=login" method="POST" novalidate>
                     <div class="field-block">
                         <label class="field-label">Gmail</label>
                         <input class="field-input" type="email" id="email" name="email" placeholder="example@gmail.com" value="<?php echo htmlspecialchars($old['email'] ?? ''); ?>">

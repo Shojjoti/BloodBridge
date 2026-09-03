@@ -24,76 +24,10 @@ $userName   = $_SESSION['user_name'] ?? '';
 $userRole   = $_SESSION['user_role'] ?? 'user';
 $profileUrl = $userRole === 'donor' ? '../authority/donorProfile.php' : '../authority/userProfile.php';
 
-// Prepare Donors List (Database query with mock fallback for demonstration)
-$donors = [
-    [
-        'id'          => 1,
-        'name'        => 'Rahim Ahmed',
-        'initials'    => 'RA',
-        'blood_group' => $bloodGroup,
-        'distance'    => '0.3',
-        'last_date'   => '12 Apr 2026',
-        'donations'   => 5,
-        'status'      => 'Available',
-        'phone'       => '+880 1712-345678',
-        'email'       => 'rahim.ahmed@gmail.com'
-    ],
-    [
-        'id'          => 2,
-        'name'        => 'Karim Hasan',
-        'initials'    => 'KH',
-        'blood_group' => $bloodGroup,
-        'distance'    => '0.8',
-        'last_date'   => '03 May 2026',
-        'donations'   => 4,
-        'status'      => 'Available',
-        'phone'       => '+880 1819-876543',
-        'email'       => 'karim.hasan@gmail.com'
-    ],
-    [
-        'id'          => 3,
-        'name'        => 'Sadia Rahman',
-        'initials'    => 'SR',
-        'blood_group' => $bloodGroup,
-        'distance'    => '1.6',
-        'last_date'   => '16 Apr 2026',
-        'donations'   => 6,
-        'status'      => 'Available',
-        'phone'       => '+880 1911-223344',
-        'email'       => 'sadia.rahman@gmail.com'
-    ]
-];
-
-// If radius is 10 or 25, add farther donors to demonstrate radius filtering
-if ($radius >= 10) {
-    $donors[] = [
-        'id'          => 4,
-        'name'        => 'Tanvir Hossain',
-        'initials'    => 'TH',
-        'blood_group' => $bloodGroup,
-        'distance'    => '7.2',
-        'last_date'   => '28 Feb 2026',
-        'donations'   => 3,
-        'status'      => 'Available',
-        'phone'       => '+880 1610-998877',
-        'email'       => 'tanvir.h@gmail.com'
-    ];
-}
-if ($radius >= 25) {
-    $donors[] = [
-        'id'          => 5,
-        'name'        => 'Nusrat Jahan',
-        'initials'    => 'NJ',
-        'blood_group' => $bloodGroup,
-        'distance'    => '18.4',
-        'last_date'   => '10 Jan 2026',
-        'donations'   => 8,
-        'status'      => 'Available',
-        'phone'       => '+880 1515-443322',
-        'email'       => 'nusrat.j@gmail.com'
-    ];
-}
 ?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 

@@ -26,7 +26,7 @@ unset($_SESSION['errors']);
         </div>
 
         <a href="../../views/home/1.home.php" class="back-home">← Back to home</a>
-               
+
     </header>
 
     <!-- Main Container -->
@@ -77,7 +77,9 @@ unset($_SESSION['errors']);
 
                     <!-- Register Button -->
                     <button type="submit">
-                        Register
+                        <a href="index.php?page=user-register">
+                            Register
+                        </a>
                     </button>
 
                 </form>
@@ -139,7 +141,7 @@ unset($_SESSION['errors']);
             <!-- DONORS -->
             <div class="footer-column">
                 <h4> For Donors </h4>
-                <a href="../../views/authority/donerRegistration.php">
+                <a href="index.php?page=donorRegister">
                     Donor Register
                 </a>
 

@@ -30,7 +30,7 @@ unset($_SESSION['errors']);
             <a href="../../views/home/1.home.php" class="active">
                 Home
             </a>
-            <a href="../../views/authority/login.php">
+            <a href="index.php?page=login">
                 Log in
             </a>
 
@@ -41,12 +41,14 @@ unset($_SESSION['errors']);
         <!-- LEFT SIDE -->
         <div class="form-section">
             <div class="form-box">
-                <h1>Become a Blood Donor</h1>
+                <h1>Become a Blood Donor</h1><a href="index.php?page=donor-register">
+                    Become a Donor
+                </a>
                 <p class="subtitle">
                     Fill in your information to register as a donor
                 </p>
 
-                <form id="donorRegisterForm" action="../../controllers/DonorController.php" method="POST" novalidate>
+                <form id="donorRegisterForm" action="index.php?page=donorRegister" method="POST" novalidate>
                     <div class="form-grid">
                         <!-- Full Name -->
                         <div class="input-group">
@@ -112,7 +114,7 @@ unset($_SESSION['errors']);
                             <label for="password">Password</label>
                             <div class="password-box">
                                 <input type="password" id="password" name="password" placeholder="Enter password">
-                                <span>◉</span>
+
                             </div>
                             <span class="error-message" id="passwordError"></span>
                         </div>
@@ -122,7 +124,7 @@ unset($_SESSION['errors']);
                             <label for="confirmPassword">Confirm Password</label>
                             <div class="password-box">
                                 <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm password">
-                                <span>◉</span>
+
                             </div>
                             <span class="error-message" id="confirmPasswordError"></span>
                         </div>
@@ -176,6 +178,8 @@ unset($_SESSION['errors']);
     </div>
 
     <script src="../../public/js/donorReg.js"></script>
+    <script src="../../public/js/validation.js"></script>
+
 
 </body>
 

@@ -1,113 +1,297 @@
 <?php
-session_start();
-require_once __DIR__ . '/../models/user.php';
-require_once __DIR__ . '/../models/donor.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+require_once "../models/user.php";
+require_once "../models/donor.php";
 
-    
-    if (isset($_POST['login'])) {
+class AuthController
+{
 
-        $errors = [];
-
-        $email = trim($_POST['email'] ?? '');
-        $password = $_POST['password'] ?? '';
-
-        // Validate Email
-        if ($email === '') {
-            $errors['email'] = 'Email is required.';
-        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = 'Please enter a valid email address.';
-        }
-
-        // Validate Password
-        if ($password === '') {
-            $errors['password'] = 'Password is required.';
-        }
-
-        
-        if (!empty($errors)) {
-            $_SESSION['errors'] = $errors;
-            $_SESSION['old'] = ['email' => $email];
-            header('Location: ../views/authority/login.php');
-            exit;
-        }
-
-       
-        $account = findDonorByEmail($email);
-        $role = 'donor';
-
-        if (!$account) {
-            $account = findUserByEmail($email);
-            $role = 'user';
-        }
-
-        if (!$account) {
-            // No record with this email at all
-            $errors['email'] = 'Email does not match any account.';
-            $_SESSION['errors'] = $errors;
-            $_SESSION['old'] = ['email' => $email];
-            header('Location: ../views/authority/login.php');
-            exit;
-        }
-
-        if (!password_verify($password, $account['password'])) {
-            $errors['password'] = 'Password does not match.';
-            $_SESSION['errors'] = $errors;
-            $_SESSION['old'] = ['email' => $email];
-            header('Location: ../views/authority/login.php');
-            exit;
-        }
-
-        $_SESSION['logged_in'] = true;
-        $_SESSION['user_email'] = $account['email'];
-        $_SESSION['user_role'] = $role;
-        $_SESSION['user_name'] = $account['full_name'];
-        header('Location: ../views/home/1.home.php');
-        exit;
-
-    } elseif (isset($_POST['reset_password'])) {
+    public function login()
+    {
+        $email = trim($_POST["email"] ?? "");
+        $password = $_POST["password"] ?? "";
 
         $errors = [];
 
-        $newPassword = $_POST['new_password'] ?? '';
-        $confirmPassword = $_POST['confirm_password'] ?? '';
 
-        // Validate New Password
-        if ($newPassword === '') {
-            $errors['new_password'] = 'Password is required.';
-        } elseif (strlen($newPassword) < 8) {
-            $errors['new_password'] = 'Password must be at least 8 characters.';
-        } elseif (!preg_match('/[A-Z]/', $newPassword) || !preg_match('/[0-9]/', $newPassword)) {
-            $errors['new_password'] = 'Password must include an uppercase letter and a number.';
+        if ($email === "") {
+            $errors[] = "Gmail is required.";
         }
 
-        // Validate Confirm Password
-        if ($confirmPassword === '') {
-            $errors['confirm_password'] = 'Please confirm your password.';
-        } elseif ($newPassword !== $confirmPassword) {
-            $errors['confirm_password'] = 'Passwords do not match.';
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = "Enter a valid Gmail.";
         }
+
+
+        if ($password === "") {
+            $errors[] = "Password is required.";
+        }
+
 
         if (!empty($errors)) {
-            $_SESSION['errors'] = $errors;
-            header('Location: ../views/authority/resetPassword.php');
-            exit;
+
+            $_SESSION["errors"] = $errors;
+
+            redirect("login");
         }
 
 
-        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+        $userModel = new User();
 
-        $_SESSION['password_reset_success'] = true;
-        header('Location: ../views/authority/login.php');
-        exit;
+        $user = $userModel->findByEmail($email);
 
-    } else {
-        header('Location: ../views/authority/login.php');
-        exit;
+
+        if (!$user || !password_verify($password, $user["password"])) {
+
+            $_SESSION["errors"] = [
+                "Invalid Gmail or password."
+            ];
+
+            redirect("login");
+        }
+
+
+        $_SESSION["user_id"] = $user["id"];
+        $_SESSION["role"] = $user["role"];
+        $_SESSION["name"] = $user["name"];
+
+
+        if ($user["role"] === "admin") {
+
+            redirect("dashboard");
+
+        } elseif ($user["role"] === "donor") {
+
+            redirect("donor-dashboard");
+
+        } else {
+
+            redirect("user-dashboard");
+        }
     }
 
-} else {
-    header('Location: ../views/authority/login.php');
-    exit;
+
+    public function userRegister()
+    {
+        $name = trim($_POST["name"] ?? "");
+        $email = trim($_POST["email"] ?? "");
+        $password = $_POST["password"] ?? "";
+        $confirmPassword = $_POST["confirm_password"] ?? "";
+
+
+        $errors = [];
+
+
+        if ($name === "") {
+            $errors[] = "Name is required.";
+        }
+
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = "Enter a valid Gmail.";
+        }
+
+
+        if (strlen($password) < 8) {
+            $errors[] = "Password must contain at least 8 characters.";
+        }
+
+
+        if ($password !== $confirmPassword) {
+            $errors[] = "Passwords do not match.";
+        }
+
+
+        $userModel = new User();
+
+        if ($userModel->findByEmail($email)) {
+            $errors[] = "This email is already registered.";
+        }
+
+
+        if (!empty($errors)) {
+
+            $_SESSION["errors"] = $errors;
+
+            redirect("user-register");
+        }
+
+
+        $hashedPassword = password_hash(
+            $password,
+            PASSWORD_DEFAULT
+        );
+
+
+        $userModel->create(
+            $name,
+            $email,
+            $hashedPassword
+        );
+
+
+        redirect("login");
+    }
+
+
+    public function donorRegister()
+    {
+        $name = trim($_POST["name"] ?? "");
+        $email = trim($_POST["email"] ?? "");
+        $password = $_POST["password"] ?? "";
+        $confirmPassword = $_POST["confirm_password"] ?? "";
+
+        $nid = trim($_POST["nid"] ?? "");
+        $phone = trim($_POST["phone"] ?? "");
+        $bloodGroup = $_POST["blood_group"] ?? "";
+
+        $lastDonation = $_POST["last_donation_date"] ?? null;
+        $totalDonations = $_POST["total_donations"] ?? 0;
+
+        $latitude = $_POST["latitude"] ?? null;
+        $longitude = $_POST["longitude"] ?? null;
+
+        $availability = $_POST["availability"] ?? 1;
+
+
+        $errors = [];
+
+
+        if ($name === "") {
+            $errors[] = "Name is required.";
+        }
+
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = "Enter a valid Gmail.";
+        }
+
+
+        if (!preg_match('/^[0-9]{10}$|^[0-9]{13}$|^[0-9]{17}$/', $nid)) {
+            $errors[] = "Invalid NID number.";
+        }
+
+
+        if (!preg_match('/^01[3-9][0-9]{8}$/', $phone)) {
+            $errors[] = "Invalid Bangladesh phone number.";
+        }
+
+
+        $validBloodGroups = [
+            "A+",
+            "A-",
+            "B+",
+            "B-",
+            "AB+",
+            "AB-",
+            "O+",
+            "O-"
+        ];
+
+
+        if (!in_array($bloodGroup, $validBloodGroups)) {
+            $errors[] = "Invalid blood group.";
+        }
+
+
+        if (strlen($password) < 8) {
+            $errors[] = "Password must contain at least 8 characters.";
+        }
+
+
+        if ($password !== $confirmPassword) {
+            $errors[] = "Passwords do not match.";
+        }
+
+
+        if (!is_numeric($totalDonations) || $totalDonations < 0) {
+            $errors[] = "Invalid donation count.";
+        }
+
+
+        if ($lastDonation !== "") {
+
+            $date = strtotime($lastDonation);
+
+            if ($date > time()) {
+                $errors[] = "Last donation date cannot be in the future.";
+            }
+        }
+
+
+        $userModel = new User();
+
+        if ($userModel->findByEmail($email)) {
+            $errors[] = "This email is already registered.";
+        }
+
+
+        if (!empty($errors)) {
+
+            $_SESSION["errors"] = $errors;
+
+            redirect("donor-register");
+        }
+
+
+        $hashedPassword = password_hash(
+            $password,
+            PASSWORD_DEFAULT
+        );
+
+
+        $userModel->create(
+            $name,
+            $email,
+            $hashedPassword
+        );
+
+
+        $user = $userModel->findByEmail($email);
+
+
+        /*
+        The donor role is changed after user creation.
+        */
+
+        $database = new Database();
+        $connection = $database->connect();
+
+        $statement = $connection->prepare(
+            "UPDATE users SET role = 'donor' WHERE id = :id"
+        );
+
+        $statement->execute([
+            ":id" => $user["id"]
+        ]);
+
+
+        $donorModel = new Donor();
+
+
+        $donorModel->create([
+            "user_id" => $user["id"],
+            "nid" => $nid,
+            "phone" => $phone,
+            "blood_group" => $bloodGroup,
+            "last_donation_date" => $lastDonation ?: null,
+            "total_donations" => $totalDonations,
+            "latitude" => $latitude,
+            "longitude" => $longitude,
+            "availability" => $availability
+        ]);
+
+
+        redirect("login");
+    }
+
+
+    public function logout()
+    {
+        session_unset();
+        session_destroy();
+
+        redirect("home");
+    }
 }
