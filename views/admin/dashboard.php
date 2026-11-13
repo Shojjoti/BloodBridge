@@ -67,17 +67,7 @@ if ($_SESSION["role"] !== "admin") {
         </div>
 
 
-        <div class="card">
 
-            <h3>
-                Verified Donors
-            </h3>
-
-            <h2 id="verifiedDonors">
-                0
-            </h2>
-
-        </div>
 
 
     </div>

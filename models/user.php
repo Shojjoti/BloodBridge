@@ -15,18 +15,33 @@ class User
 
     public function create($name, $email, $password)
     {
-        $sql = "INSERT INTO users
-                (name, email, password, role)
-                VALUES
-                (:name, :email, :password, 'user')";
+        try {
+            $sql = "INSERT INTO users
+                    (name, email, password, role)
+                    VALUES
+                    (:name, :email, :password, 'user')";
 
-        $statement = $this->connection->prepare($sql);
+            $statement = $this->connection->prepare($sql);
 
-        return $statement->execute([
-            ":name" => $name,
-            ":email" => $email,
-            ":password" => $password
-        ]);
+            return $statement->execute([
+                ":name" => $name,
+                ":email" => $email,
+                ":password" => $password
+            ]);
+        } catch (PDOException $e) {
+            $sql = "INSERT INTO users
+                    (full_name, email, password, role)
+                    VALUES
+                    (:name, :email, :password, 'user')";
+
+            $statement = $this->connection->prepare($sql);
+
+            return $statement->execute([
+                ":name" => $name,
+                ":email" => $email,
+                ":password" => $password
+            ]);
+        }
     }
 
 

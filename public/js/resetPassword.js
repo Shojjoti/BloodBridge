@@ -52,6 +52,24 @@ document.addEventListener('DOMContentLoaded', function () {
         return true;
     }
 
+    // Password visibility toggles
+    const eyeBtns = form.querySelectorAll('.eye-btn');
+    eyeBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const inputWrap = btn.closest('.field-input-wrap');
+            const input = inputWrap ? inputWrap.querySelector('input') : null;
+            if (!input) return;
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.style.opacity = '0.6';
+            } else {
+                input.type = 'password';
+                btn.style.opacity = '1';
+            }
+        });
+    });
+
     // Real-time validation on blur
     newPassword.addEventListener('blur', validateNewPassword);
     confirmPassword.addEventListener('blur', validateConfirmPassword);

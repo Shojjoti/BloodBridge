@@ -44,9 +44,7 @@ document.addEventListener(
             ).textContent = data.requests;
 
 
-            document.getElementById(
-                "verifiedDonors"
-            ).textContent = data.verified;
+
 
         })
 

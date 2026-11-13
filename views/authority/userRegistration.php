@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 $errors = $_SESSION['errors'] ?? [];
 unset($_SESSION['errors']);
 ?>
@@ -13,8 +15,11 @@ unset($_SESSION['errors']);
 
     <title>General User Registration</title>
 
-    <link rel="stylesheet" href="../../public/style/1.home.css">
-    <link rel="stylesheet" href="../../public/style/donar&UserRegistration.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style/1.home.css">
+    <link rel="stylesheet" href="style/donar&UserRegistration.css">
 </head>
 
 <body>
@@ -22,10 +27,10 @@ unset($_SESSION['errors']);
 
         <div class="brand">
             BloodBridge
-            <img src="../../public/images/logo.jpg" alt="BloodBridge Logo">
+            <img src="images/logo.jpg" onerror="this.src='../../public/images/logo.jpg'" alt="BloodBridge Logo">
         </div>
 
-        <a href="../../views/home/1.home.php" class="back-home">← Back to home</a>
+        <a href="index.php?page=home" class="back-home">← Back to home</a>
 
     </header>
 
@@ -39,7 +44,7 @@ unset($_SESSION['errors']);
                     Join us to find blood donors near you
                 </p>
 
-                <form id="registerForm" action="../../controllers/UserController.php" method="POST" novalidate>
+                <form id="registerForm" action="<?php echo defined('BASE_URL') ? BASE_URL . '?page=user-register' : 'index.php?page=user-register'; ?>" method="POST" novalidate>
                     <!-- Full Name -->
                     <div class="input-group">
                         <label for="fullName">Full Name</label>
@@ -76,24 +81,17 @@ unset($_SESSION['errors']);
                     </div>
 
                     <!-- Register Button -->
-                    <button type="submit">
-                        <a href="index.php?page=user-register">
-                            Register
-                        </a>
-                    </button>
+                    <button type="submit">Register</button>
 
                 </form>
 
 
                 <!-- Login -->
                 <p class="login-text">
-
                     Already have an account?
-
-                    <a href="../../views/authority/login.php">
+                    <a href="index.php?page=login">
                         Login
                     </a>
-
                 </p>
 
             </div>
@@ -102,7 +100,7 @@ unset($_SESSION['errors']);
         <!-- RIGHT SIDE  -->
         <div class="illustration-section">
             <!-- image -->
-            <img src="../../public/images/peopleBlood.png" alt="peopleBlood">
+            <img src="images/peopleBlood.png" onerror="this.src='../../public/images/peopleBlood.png'" alt="peopleBlood">
             <h2>
                 Be the reason<br>
                 someone smiles today.
@@ -120,7 +118,7 @@ unset($_SESSION['errors']);
             <div class="footer-column footer-about">
                 <div class="footer-brand">
                     BloodBridge
-                    <img src="../../public/images/logo.jpg" alt="blood drop logo">
+                    <img src="images/logo.jpg" onerror="this.src='../../public/images/logo.jpg'" alt="blood drop logo">
                     <!-- IMAGE: Small blood drop logo -->
                 </div>
                 <p>
@@ -132,16 +130,16 @@ unset($_SESSION['errors']);
             <div class="footer-column">
                 <h4> Quick Links </h4>
 
-                <a href="../../views/home/1.home.php">Home </a>
-                <a href="../../views/blood/findBlood.php">Find Blood </a>
-                <a href="../../views/authority/donerRegistration.php">Become a Donor</a>
-                <a href="../../views/home/aboutUs.php"> About Us </a>
+                <a href="index.php?page=home">Home </a>
+                <a href="index.php?page=find-blood">Find Blood </a>
+                <a href="index.php?page=donor-register">Become a Donor</a>
+                <a href="index.php?page=about"> About Us </a>
             </div>
 
             <!-- DONORS -->
             <div class="footer-column">
                 <h4> For Donors </h4>
-                <a href="index.php?page=donorRegister">
+                <a href="index.php?page=donor-register">
                     Donor Register
                 </a>
 
@@ -154,10 +152,10 @@ unset($_SESSION['errors']);
             <!-- USERS -->
             <div class="footer-column">
                 <h4> For Users </h4>
-                <a href="../../views/blood/searchResult.php">
+                <a href="index.php?page=search-results">
                     Search Blood
                 </a>
-                <a href="../../views/blood/searchResult.php">
+                <a href="index.php?page=search-results">
                     Blood Requests
                 </a>
                 <a href="#">
@@ -199,7 +197,7 @@ unset($_SESSION['errors']);
         </div>
     </footer>
 
-    <script src="../../public/js/generalUserReg.js"></script>
+    <script src="js/generalUserReg.js"></script>
 
 </body>
 

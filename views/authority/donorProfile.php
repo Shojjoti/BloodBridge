@@ -1,23 +1,41 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../../views/auth/login.php");
-    exit;
+    if (function_exists('redirect')) {
+        redirect("login");
+    } else {
+        header("Location: ../../views/authority/login.php");
+        exit;
+    }
 }
 
 $user_id = $_SESSION['user_id'];
 
+require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../models/donor.php';
+require_once __DIR__ . '/../../models/user.php';
+
+$donorModel = new Donor();
+$userModel = new User();
+
+$donorData = $donorModel->findByUserId($user_id);
+$userData = $userModel->findById($user_id);
 
 $donor = [
-    'full_name' => '',
-    'nid_number' => '',
-    'phone' => '',
-    'email' => '',
-    'blood_group' => '',
-    'last_donation_date' => '',
-    'total_donations' => '',
-    'status' => '',
+    'full_name' => $userData['name'] ?? ($userData['full_name'] ?? ($_SESSION['name'] ?? '')),
+    'nid_number' => $donorData['nid'] ?? ($donorData['nid_number'] ?? ''),
+    'phone' => $donorData['phone'] ?? '',
+    'email' => $userData['email'] ?? '',
+    'blood_group' => $donorData['blood_group'] ?? '',
+    'last_donation_date' => $donorData['last_donation_date'] ?? '',
+    'total_donations' => $donorData['total_donations'] ?? ($donorData['previous_donations'] ?? '0'),
+    'location' => $donorData['location'] ?? '',
+    'latitude' => $donorData['latitude'] ?? '',
+    'longitude' => $donorData['longitude'] ?? '',
+    'status' => (!empty($donorData['verified']) && $donorData['verified'] == 1) ? 'Verified' : 'Pending Verification',
 ];
 ?>
 <!DOCTYPE html>
@@ -25,9 +43,9 @@ $donor = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Donor Profile</title>
-    <link rel="stylesheet" href="../../public/style/profile.css">
-    <link rel="stylesheet" href="../../public/style/1.home.css">
+    <title>Donor Profile · BloodBridge</title>
+    <link rel="stylesheet" href="style/profile.css">
+    <link rel="stylesheet" href="style/1.home.css">
 </head>
 <body>
     <div id="alert-box" class="alert-box" style="display:none;"></div>
@@ -35,9 +53,15 @@ $donor = [
     <header class="navbar">
         <div class="brand">
             BloodBridge
-            <img src="../../public/images/logo.jpg" alt="BloodBridge Logo">
+            <img src="images/logo.jpg" onerror="this.src='../../public/images/logo.jpg'" alt="BloodBridge Logo" width="26" height="26">
         </div>
-        <a href="../../views/home/1.home.php" class="back-home">← Back to home</a>
+        <div style="display:flex; gap:16px; align-items:center;">
+            <a href="index.php?page=home" class="back-home">Home</a>
+            <a href="index.php?page=find-blood" class="back-home">Find Blood</a>
+            <form method="POST" action="index.php?page=logout" style="margin:0;">
+                <button type="submit" class="btn btn-outline btn-sm" style="padding:4px 12px; font-size:12px;">Logout</button>
+            </form>
+        </div>
     </header>
 
     <div class="profile-container">
@@ -105,6 +129,20 @@ $donor = [
                 </div>
             </div>
 
+            <div class="form-row">
+                <div class="form-group" style="flex:1;">
+                    <label>Location</label>
+                    <div style="position: relative; width: 100%;">
+                        <input type="text" id="location" name="location" value="<?= htmlspecialchars($donor['location']) ?>" placeholder="Enter your area/city" style="padding-right: 40px; box-sizing: border-box;">
+                        <button type="button" id="geoBtn" title="Get GPS Location" style="position: absolute; right: 11px; top: 50%; transform: translateY(-50%); border: none; background: transparent; cursor: pointer; font-size: 1.2rem; padding: 0; width: auto; margin: 0; line-height: 1; outline: none; box-shadow: none;">
+                            📍
+                        </button>
+                    </div>
+                    <input type="hidden" id="lat" name="latitude" value="<?= htmlspecialchars($donor['latitude']) ?>">
+                    <input type="hidden" id="lng" name="longitude" value="<?= htmlspecialchars($donor['longitude']) ?>">
+                </div>
+            </div>
+
             <div class="form-group confirm-password">
                 <label>Confirm Password</label>
                 <input type="password" name="confirm_password" placeholder="রেখে দাও যদি বদলাতে না চাও">
@@ -124,7 +162,7 @@ $donor = [
             </div>
 
             <div class="button-container">
-                <button type="button" class="cancel-btn" onclick="window.location.href='../../views/home/1.home.php'">Cancel</button>
+                <button type="button" class="cancel-btn" onclick="window.location.href='index.php?page=home'">Cancel</button>
                 <button type="submit" class="update-btn">Update Profile</button>
             </div>
 
@@ -138,7 +176,7 @@ $donor = [
         const formData = new FormData(this);
 
         try {
-            const res = await fetch('update_profile.php', {
+            const res = await fetch('../controllers/updateProfile.php', {
                 method: 'POST',
                 body: formData
             });
@@ -160,6 +198,44 @@ $donor = [
             box.style.display = 'none';
         }, 3000);
     }
+
+    document.getElementById('geoBtn').addEventListener('click', function() {
+        if (navigator.geolocation) {
+            this.innerHTML = '⏳';
+            navigator.geolocation.getCurrentPosition(function(position) {
+                document.getElementById('lat').value = position.coords.latitude;
+                document.getElementById('lng').value = position.coords.longitude;
+                
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.display_name) {
+                            let addr = data.address;
+                            let area = addr.neighbourhood || addr.suburb || addr.residential || addr.village || addr.county || "";
+                            let city = addr.city || addr.town || addr.state_district || "";
+                            
+                            let parts = [];
+                            if (area) parts.push(area);
+                            if (city && city !== area) parts.push(city);
+                            
+                            document.getElementById('location').value = parts.length > 0 ? parts.join(', ') : data.display_name.split(',').slice(0, 2).join(', ');
+                        }
+                        document.getElementById('geoBtn').innerHTML = '✅';
+                        setTimeout(() => document.getElementById('geoBtn').innerHTML = '📍', 2000);
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        document.getElementById('geoBtn').innerHTML = '📍';
+                        document.getElementById('location').value = "Lat: " + position.coords.latitude.toFixed(4) + ", Lng: " + position.coords.longitude.toFixed(4);
+                    });
+            }, function(error) {
+                alert("Error getting location: " + error.message);
+                document.getElementById('geoBtn').innerHTML = '📍';
+            });
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    });
     </script>
 
 </body>

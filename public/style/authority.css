@@ -1,0 +1,124 @@
+:root {
+  --red: #D62839;
+  --red-dark: #A4161A;
+  --dark: #1F2937;
+  --gray: #687280;
+  --gray-line: #E5E7EB;
+  --white: #FFFFFF;
+  --bg-light: #F9FAFB;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-sm: 0 1px 3px rgba(31, 41, 55, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--dark);
+  background-color: var(--bg-light);
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 32px;
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--dark);
+  margin: 0 0 8px 0;
+}
+
+p {
+  color: var(--gray);
+  margin: 0 0 28px 0;
+  font-size: 15px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.card {
+  background: var(--white);
+  border: 1px solid var(--gray-line);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.card h3 {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card h2 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--red);
+}
+
+.btn {
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 8px;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+.btn-primary {
+  background: var(--red);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--red-dark);
+}
+
+.btn-outline {
+  background: #fff;
+  color: var(--red);
+  border: 1.5px solid var(--red);
+}
+
+.btn-outline:hover {
+  background: #FDEEEF;
+}
+
+form {
+  display: inline-block;
+}

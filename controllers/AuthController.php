@@ -1,7 +1,8 @@
 <?php
 
-require_once "../models/user.php";
-require_once "../models/donor.php";
+require_once __DIR__ . "/../config/config.php";
+require_once __DIR__ . "/../models/user.php";
+require_once __DIR__ . "/../models/donor.php";
 
 class AuthController
 {
@@ -30,9 +31,8 @@ class AuthController
 
 
         if (!empty($errors)) {
-
+            $_SESSION["old"] = ["email" => $email];
             $_SESSION["errors"] = $errors;
-
             redirect("login");
         }
 
@@ -43,7 +43,7 @@ class AuthController
 
 
         if (!$user || !password_verify($password, $user["password"])) {
-
+            $_SESSION["old"] = ["email" => $email];
             $_SESSION["errors"] = [
                 "Invalid Gmail or password."
             ];
@@ -52,22 +52,22 @@ class AuthController
         }
 
 
+        $role = strtolower(trim($user["role"] ?? "user"));
+        $name = $user["name"] ?? ($user["full_name"] ?? "Admin");
+
         $_SESSION["user_id"] = $user["id"];
-        $_SESSION["role"] = $user["role"];
-        $_SESSION["name"] = $user["name"];
+        $_SESSION["role"] = $role;
+        $_SESSION["name"] = $name;
+        $_SESSION["logged_in"] = true;
+        $_SESSION["user_role"] = $role;
+        $_SESSION["user_name"] = $name;
 
-
-        if ($user["role"] === "admin") {
-
-            redirect("dashboard");
-
-        } elseif ($user["role"] === "donor") {
-
+        if ($role === "admin") {
+            redirect("admin-dashboard");
+        } elseif ($role === "donor") {
             redirect("donor-dashboard");
-
         } else {
-
-            redirect("user-dashboard");
+            redirect("home");
         }
     }
 
@@ -293,5 +293,81 @@ class AuthController
         session_destroy();
 
         redirect("home");
+    }
+
+    public function forgotPassword()
+    {
+        $email = trim($_POST['email'] ?? '');
+        if ($email === '') {
+            $_SESSION['errors'] = ['email' => 'Email is required.'];
+            redirect('forgot-password');
+        }
+
+        $userModel = new User();
+        $user = $userModel->findByEmail($email);
+        
+        if (!$user) {
+            // Display success anyway to prevent email enumeration, but in this prototype we can show error or success.
+            // Let's redirect to reset anyway for simplicity, or we can just proceed.
+            $_SESSION['reset_email'] = $email;
+            redirect('reset-password');
+        }
+
+        $_SESSION['reset_email'] = $email;
+        // In a real app we'd send an OTP here.
+        redirect('reset-password');
+    }
+
+    public function resetPassword()
+    {
+        $email = $_SESSION['reset_email'] ?? '';
+        if (!$email) {
+            redirect('forgot-password');
+        }
+
+        $password = $_POST['new_password'] ?? '';
+        $confirmPassword = $_POST['confirm_password'] ?? '';
+        $errors = [];
+
+        if (strlen($password) < 8) {
+            $errors['new_password'] = 'Password must be at least 8 characters.';
+        }
+        if ($password !== $confirmPassword) {
+            $errors['confirm_password'] = 'Passwords do not match.';
+        }
+
+        if (!empty($errors)) {
+            $_SESSION['errors'] = $errors;
+            redirect('reset-password');
+        }
+
+        $userModel = new User();
+        $user = $userModel->findByEmail($email);
+
+        if ($user) {
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+            $database = new Database();
+            $connection = $database->connect();
+            $statement = $connection->prepare("UPDATE users SET password = :password WHERE email = :email");
+            $statement->execute([':password' => $hashedPassword, ':email' => $email]);
+        }
+
+        unset($_SESSION['reset_email']);
+        redirect('login');
+    }
+}
+
+// Handle direct form submissions if called directly outside of index.php
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && basename($_SERVER['PHP_SELF']) === 'AuthController.php') {
+    $auth = new AuthController();
+    $action = $_GET['action'] ?? ($_POST['action'] ?? 'login');
+    if ($action === 'userRegister') {
+        $auth->userRegister();
+    } elseif ($action === 'donorRegister') {
+        $auth->donorRegister();
+    } elseif ($action === 'logout') {
+        $auth->logout();
+    } else {
+        $auth->login();
     }
 }

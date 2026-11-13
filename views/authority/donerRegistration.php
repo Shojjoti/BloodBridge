@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 $errors = $_SESSION['errors'] ?? [];
 unset($_SESSION['errors']);
 ?>
@@ -12,8 +14,11 @@ unset($_SESSION['errors']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Become a Blood Donor</title>
-    <link rel="stylesheet" href="../../public/style/1.home.css">
-    <link rel="stylesheet" href="../../public/style/donar&UserRegistration.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style/1.home.css">
+    <link rel="stylesheet" href="style/donar&UserRegistration.css">
 </head>
 
 <body>
@@ -22,12 +27,12 @@ unset($_SESSION['errors']);
 
         <div class="brand">
             BloodBridge
-            <img src="../../public/images/logo.jpg" alt="BloodBridge Logo">
+            <img src="images/logo.jpg" onerror="this.src='../../public/images/logo.jpg'" alt="BloodBridge Logo">
         </div>
 
 
         <nav class="nav-links">
-            <a href="../../views/home/1.home.php" class="active">
+            <a href="index.php?page=home">
                 Home
             </a>
             <a href="index.php?page=login">
@@ -41,14 +46,12 @@ unset($_SESSION['errors']);
         <!-- LEFT SIDE -->
         <div class="form-section">
             <div class="form-box">
-                <h1>Become a Blood Donor</h1><a href="index.php?page=donor-register">
-                    Become a Donor
-                </a>
+                <h1>Become a Blood Donor</h1>
                 <p class="subtitle">
                     Fill in your information to register as a donor
                 </p>
 
-                <form id="donorRegisterForm" action="index.php?page=donorRegister" method="POST" novalidate>
+                <form id="donorRegisterForm" action="<?php echo defined('BASE_URL') ? BASE_URL . '?page=donor-register' : 'index.php?page=donor-register'; ?>" method="POST" novalidate>
                     <div class="form-grid">
                         <!-- Full Name -->
                         <div class="input-group">
@@ -93,6 +96,20 @@ unset($_SESSION['errors']);
                                 <option>O-</option>
                             </select>
                             <span class="error-message" id="bloodGroupError"></span>
+                        </div>
+
+                        <!-- Location -->
+                        <div class="input-group">
+                            <label for="location">Location</label>
+                            <div style="position: relative; width: 100%;">
+                                <input type="text" id="location" name="location" placeholder="Enter your area/city" style="padding-right: 40px; box-sizing: border-box;">
+                                <button type="button" id="geoBtn" title="Get GPS Location" style="position: absolute; right: 11px; top: 50%; transform: translateY(-50%); border: none; background: transparent; cursor: pointer; font-size: 1.2rem; padding: 0; width: auto; margin: 0; line-height: 1; outline: none; box-shadow: none;">
+                                    📍
+                                </button>
+                            </div>
+                            <input type="hidden" id="lat" name="lat">
+                            <input type="hidden" id="lng" name="lng">
+                            <span class="error-message" id="locationError"><?php echo htmlspecialchars($errors['location'] ?? ''); ?></span>
                         </div>
 
                         <!-- Last Donation Date -->
@@ -157,7 +174,7 @@ unset($_SESSION['errors']);
         <div class="donation-section">
             <!-- Blood Bag Illustration -->
             <div class="blood-illustration">
-                <img src="../../public/images/bloodOnBag.png" alt="Blood on Bag">
+                <img src="images/bloodOnBag.png" onerror="this.src='../../public/images/bloodOnBag.png'" alt="Blood on Bag">
             </div>
 
             <div>
@@ -177,10 +194,47 @@ unset($_SESSION['errors']);
 
     </div>
 
-    <script src="../../public/js/donorReg.js"></script>
-    <script src="../../public/js/validation.js"></script>
-
-
+    <script src="js/donorReg.js"></script>
+    <script>
+        document.getElementById('geoBtn').addEventListener('click', function() {
+            if (navigator.geolocation) {
+                this.innerHTML = '⏳';
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    document.getElementById('lat').value = position.coords.latitude;
+                    document.getElementById('lng').value = position.coords.longitude;
+                    
+                    // Simple reverse geocoding using free API
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data && data.display_name) {
+                            let addr = data.address;
+                            let area = addr.neighbourhood || addr.suburb || addr.residential || addr.village || addr.county || "";
+                            let city = addr.city || addr.town || addr.state_district || "";
+                            
+                            let parts = [];
+                            if (area) parts.push(area);
+                            if (city && city !== area) parts.push(city);
+                            
+                            document.getElementById('location').value = parts.length > 0 ? parts.join(', ') : data.display_name.split(',').slice(0, 2).join(', ');
+                        }
+                            document.getElementById('geoBtn').innerHTML = '✅';
+                            setTimeout(() => document.getElementById('geoBtn').innerHTML = '📍', 2000);
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            document.getElementById('geoBtn').innerHTML = '📍';
+                            document.getElementById('location').value = "Lat: " + position.coords.latitude.toFixed(4) + ", Lng: " + position.coords.longitude.toFixed(4);
+                        });
+                }, function(error) {
+                    alert("Error getting location: " + error.message);
+                    document.getElementById('geoBtn').innerHTML = '📍';
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        });
+    </script>
 </body>
 
 </html>

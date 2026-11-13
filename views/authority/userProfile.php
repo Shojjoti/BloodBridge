@@ -1,72 +1,74 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!isset($_SESSION['user_id'])) {
+    if (function_exists('redirect')) {
+        redirect("login");
+    } else {
+        header("Location: ../../views/authority/login.php");
+        exit;
+    }
+}
+
+$user_id = $_SESSION['user_id'];
+
+require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../models/user.php';
+
+$userModel = new User();
+$userData = $userModel->findById($user_id);
+
+$userName = $userData['name'] ?? ($userData['full_name'] ?? ($_SESSION['name'] ?? ''));
+$userEmail = $userData['email'] ?? '';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>User Profile</title>
-
-    <link rel="stylesheet" href="../../public/style/profile.css">
-    <link rel="stylesheet" href="../../public/style/1.home.css">
+    <title>User Profile · BloodBridge</title>
+    <link rel="stylesheet" href="style/profile.css">
+    <link rel="stylesheet" href="style/1.home.css">
 </head>
-
 <body>
-
     <header class="navbar">
-
         <div class="brand">
             BloodBridge
-            <img src="../../public/images/logo.jpg" alt="BloodBridge Logo">
+            <img src="images/logo.jpg" onerror="this.src='../../public/images/logo.jpg'" alt="BloodBridge Logo" width="26" height="26">
         </div>
-
-        <a href="../../views/home/1.home.php" class="back-home">← Back to home</a>
-
+        <div style="display:flex; gap:16px; align-items:center;">
+            <a href="index.php?page=home" class="back-home">Home</a>
+            <a href="index.php?page=find-blood" class="back-home">Find Blood</a>
+            <form method="POST" action="index.php?page=logout" style="margin:0;">
+                <button type="submit" class="btn btn-outline btn-sm" style="padding:4px 12px; font-size:12px;">Logout</button>
+            </form>
+        </div>
     </header>
 
     <div class="profile-container">
-
-        <!-- Header -->
-
         <div class="profile-header">
-
-            <div class="profile-icon">
-                👤
-            </div>
-
+            <div class="profile-icon">👤</div>
             <div>
                 <h1>User Profile</h1>
                 <p>Manage your account information</p>
             </div>
-
         </div>
 
-
-        <!-- Profile Form -->
-
         <div class="profile-form">
-
             <div class="section-title">
                 <h2>Personal Information</h2>
             </div>
 
-
             <div class="form-group">
                 <label>Full Name</label>
-
-                <input
-                    type="text"
-                    value="Shojjoti Hossen"
-                    placeholder="Enter your full name">
+                <input type="text" value="<?= htmlspecialchars($userName) ?>" placeholder="Enter your full name">
             </div>
-
 
             <div class="form-group">
                 <label>Email</label>
-
-                <input
-                    type="email"
-                    value="example@gmail.com"
-                    placeholder="Enter your email">
+                <input type="email" value="<?= htmlspecialchars($userEmail) ?>" placeholder="Enter your email" readonly>
             </div>
 
 
@@ -122,15 +124,8 @@
             <!-- Buttons -->
 
             <div class="button-container">
-
-                <button class="cancel-btn">
-                    Cancel
-                </button>
-
-                <button class="update-btn">
-                    Update Profile
-                </button>
-
+                <button type="button" class="cancel-btn" onclick="window.location.href='index.php?page=home'">Cancel</button>
+                <button type="submit" class="update-btn">Update Profile</button>
             </div>
 
         </div>

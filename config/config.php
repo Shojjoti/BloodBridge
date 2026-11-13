@@ -1,8 +1,21 @@
 <?php
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-define("BASE_URL", "/BloodBridge/public/index.php");
+if (!defined("BASE_URL")) {
+    $scriptName = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
+    if (preg_match('#^(.*?)/(public|controllers|views|config|models)#', $scriptName, $matches)) {
+        $baseFolder = $matches[1];
+    } else {
+        $baseFolder = dirname($scriptName);
+        if ($baseFolder === '/' || $baseFolder === '\\') {
+            $baseFolder = '';
+        }
+    }
+    define("BASE_URL", rtrim($baseFolder, '/') . "/public/index.php");
+}
 
 function redirect($page)
 {

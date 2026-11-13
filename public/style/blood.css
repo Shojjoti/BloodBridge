@@ -1,442 +1,140 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+/* Beginner-Friendly Blood Search CSS */
 
-:root {
-  --red: #D62839;
-  --red-dark: #A4161A;
-  --dark: #1F2937;
-  --gray: #687280;
-  --gray-line: #E5E7EB;
-  --light: #F8FAFC;
-  --white: #FFFFFF;
-  --success: #16A34A;
-  --radius: 10px;
-  --shadow: 0 1px 3px rgba(31, 41, 55, 0.08), 0 1px 2px rgba(31, 41, 55, 0.04);
-}
-
-/* ---------- Common Utility Styles ---------- */
+/* Simple Card Styling */
 .card {
-  background: #fff;
-  border: 1px solid var(--gray-line);
-  border-radius: 12px;
-  box-shadow: var(--shadow);
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 600;
-  border-radius: 999px;
-  padding: 4px 10px;
-}
-.badge-success { background: #DCFCE7; color: var(--success); }
-.badge-red { background: #FDEEEF; color: var(--red); }
-.badge-gray { background: #F1F5F9; color: var(--gray); }
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 16px;
-}
-.field label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--dark);
-}
-.input-wrap {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-.input, .select {
-  width: 100%;
-  font-family: inherit;
-  font-size: 14px;
-  color: var(--dark);
-  background: #fff;
-  border: 1px solid var(--gray-line);
-  border-radius: 8px;
-  padding: 11px 14px;
-  outline: none;
-  transition: border-color .15s ease, box-shadow .15s ease;
-  appearance: none;
-}
-.input::placeholder { color: #9CA3AF; }
-.input:focus, .select:focus {
-  border-color: var(--red);
-  box-shadow: 0 0 0 3px rgba(214, 40, 57, 0.12);
-}
-.select {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23687280' stroke-width='2'><path d='M4 6l4 4 4-4'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-  padding-right: 36px;
-}
-.input-icon {
-  position: absolute;
-  right: 12px;
-  color: var(--gray);
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0;
-  display: flex;
-}
-
-.btn-block { width: 100%; }
-
-/* ---------- Find Blood Layout ---------- */
+/* Form Container Layout */
 .find-blood-container {
-  display: flex;
-  gap: 48px;
-  padding: 56px 32px;
-  align-items: flex-start;
+    display: flex;
+    flex-wrap: wrap; /* Allows wrapping on small screens */
+    gap: 30px;
+    padding: 40px 20px;
+    max-width: 1000px;
+    margin: 0 auto;
 }
 
 .find-blood-form-col {
-  flex: 1;
-  max-width: 420px;
-}
-
-.find-blood-title {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--dark);
-  margin: 0;
-}
-
-.find-blood-subtitle {
-  color: var(--gray);
-  margin-top: 8px;
-  margin-bottom: 28px;
-  font-size: 14px;
+    flex: 1; /* Takes up left half */
+    min-width: 300px;
 }
 
 .map-card {
-  flex: 1;
-  height: 440px;
-  overflow: hidden;
+    flex: 1; /* Takes up right half */
+    min-width: 300px;
+    height: 400px;
+    overflow: hidden;
 }
 
-/* ---------- Search Results Layout ---------- */
+/* Form Inputs */
+.field {
+    margin-bottom: 15px;
+}
+
+.field label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box; /* Prevents padding from breaking width */
+    font-size: 14px;
+}
+
+/* Donor Results Page */
 .search-results-section {
-  padding: 48px 32px;
-  max-width: 820px;
-  margin: 0 auto;
+    padding: 40px 20px;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 .search-results-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 24px;
-}
-
-.search-results-title {
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--dark);
-  margin: 0;
-}
-
-.search-results-subtitle {
-  color: var(--gray);
-  margin-top: 6px;
-  font-size: 14px;
-  margin-bottom: 0;
-}
-
-.search-filter-badge-col {
-  text-align: right;
-}
-
-.search-filter-badge-col .badge {
-  font-size: 13px;
-}
-
-.change-search-link {
-  font-size: 13px;
-  color: var(--red);
-  font-weight: 600;
-  text-decoration: none;
-  display: inline-block;
-  margin-top: 4px;
-  transition: color 0.15s ease;
-}
-
-.change-search-link:hover {
-  color: var(--red-dark);
-  text-decoration: underline;
-}
-
-/* ---------- Donor Cards ---------- */
-.donor-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 24px;
-  margin-bottom: 14px;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.donor-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(31, 41, 55, 0.08);
-}
-
-.donor-info-group {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.donor-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: #FDEEEF;
-  color: var(--red);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 15px;
-  flex-shrink: 0;
-}
-
-.donor-title-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.donor-name {
-  font-weight: 600;
-  color: var(--dark);
-  font-size: 15px;
-}
-
-.donor-meta {
-  color: var(--gray);
-  font-size: 13px;
-  margin-top: 4px;
-}
-
-.donor-action-group {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.no-donors-text {
-  text-align: center;
-  color: var(--gray);
-  margin-top: 24px;
-  font-size: 13px;
-}
-
-/* ---------- Responsive ---------- */
-@media (max-width: 900px) {
-  .find-blood-container {
-    flex-direction: column;
-    padding: 36px 20px;
-  }
-
-  .find-blood-form-col {
-    max-width: 100%;
-    width: 100%;
-  }
-
-  .map-card {
-    width: 100%;
-    height: 320px;
-  }
-
-  .donor-card {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-
-  .donor-action-group {
-    width: 100%;
+    display: flex;
     justify-content: space-between;
-  }
+    align-items: center;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
 }
 
-@media (max-width: 480px) {
-  .search-results-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .search-filter-badge-col {
-    text-align: left;
-  }
+.donor-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    border-left: 5px solid #d62839; /* Red highlight on left edge */
 }
 
-/* ---------- Form Validation & States ---------- */
-.error-message {
-  color: #d10000;
-  font-size: 0.8rem;
-  display: block;
-  margin-top: 4px;
-  min-height: 16px;
+/* Badges (Tags like Blood Group or Status) */
+.badge {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
 }
 
-.input.invalid, .select.invalid {
-  border-color: #d10000 !important;
-  box-shadow: 0 0 0 3px rgba(209, 0, 0, 0.12) !important;
+.badge-red {
+    background-color: #ffe6e6;
+    color: #d62839;
 }
 
-/* Geolocation button animation & active state */
-.input-icon {
-  cursor: pointer;
-  transition: transform 0.2s ease, color 0.2s ease;
-}
-.input-icon:hover {
-  transform: scale(1.15);
-}
-.input-icon.loading {
-  animation: spin 1s linear infinite;
-  pointer-events: none;
-}
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.badge-success {
+    background-color: #e6ffe6;
+    color: #28a745;
 }
 
-/* ---------- Recent Searches Chips ---------- */
-.recent-searches-box {
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px dashed var(--gray-line);
-}
-.recent-searches-title {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--gray);
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-.recent-chips-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.recent-chip {
-  background: var(--light);
-  border: 1px solid var(--gray-line);
-  border-radius: 20px;
-  padding: 5px 12px;
-  font-size: 12px;
-  color: var(--dark);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.15s ease;
-}
-.recent-chip:hover {
-  background: #FDEEEF;
-  border-color: var(--red);
-  color: var(--red);
-}
-.recent-chip .chip-group {
-  font-weight: 700;
-  color: var(--red);
-}
-
-/* ---------- Popups & Modals ---------- */
+/* Popup Modals */
 .popup-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  backdrop-filter: blur(3px);
-}
-.popup-box {
-  background: #fff;
-  border-radius: 16px;
-  padding: 32px 28px;
-  width: 90%;
-  max-width: 440px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  text-align: center;
-  animation: popupIn 0.25s ease-out;
-}
-@keyframes popupIn {
-  from { opacity: 0; transform: scale(0.92); }
-  to { opacity: 1; transform: scale(1); }
-}
-.popup-box h2 {
-  font-size: 20px;
-  margin-bottom: 10px;
-  color: var(--dark);
-}
-.popup-box p {
-  font-size: 14px;
-  color: var(--gray);
-  line-height: 1.5;
-  margin-bottom: 24px;
-}
-.popup-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-}
-.popup-contact-info {
-  background: #F8FAFC;
-  border: 1px solid var(--gray-line);
-  border-radius: 10px;
-  padding: 16px;
-  margin-bottom: 20px;
-  text-align: left;
-}
-.popup-contact-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-  color: var(--dark);
-  margin-bottom: 8px;
-}
-.popup-contact-row:last-child {
-  margin-bottom: 0;
-}
-.popup-contact-row strong {
-  min-width: 60px;
-  color: var(--gray);
-  font-size: 12px;
-  text-transform: uppercase;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
 }
 
-/* User navigation menu state */
-.user-menu-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
-  font-size: 14px;
-  color: var(--dark);
+.popup-box {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    width: 400px;
+    text-align: center;
 }
-.user-avatar-sm {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #FDEEEF;
-  color: var(--red);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 700;
+
+.popup-contact-info {
+    text-align: left;
+    background: #f9f9f9;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 5px;
+}
+
+.popup-contact-info strong {
+    display: inline-block;
+    width: 80px; /* Aligns the labels */
+}
+
+/* Responsive Fixes */
+@media (max-width: 600px) {
+    .donor-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
 }
 
