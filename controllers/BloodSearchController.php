@@ -1,126 +1,196 @@
 <?php
-session_start();
 
-// Handle Search Submission
-if ($_SERVER['REQUEST_METHOD'] === 'GET' || $_SERVER['REQUEST_METHOD'] === 'POST') {
-    $data = $_SERVER['REQUEST_METHOD'] === 'POST' ? $_POST : $_GET;
+require_once "../config/database.php";
 
-    $errors = [];
+class BloodSearchController
+{
 
-    // Sanitize Inputs
-    $bloodGroup = trim($data['blood_group'] ?? '');
-    $location   = trim(strip_tags($data['location'] ?? ''));
-    $radius     = trim($data['radius'] ?? '5');
-    $lat        = trim($data['lat'] ?? '');
-    $lng        = trim($data['lng'] ?? '');
+    public function searchDonors()
+    {
+        header("Content-Type: application/json");
 
-    // 1. Validate Blood Group against Whitelist
-    $validBloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-    if ($bloodGroup === '') {
-        $errors['bloodGroup'] = 'Please select a blood group.';
-    } elseif (!in_array($bloodGroup, $validBloodGroups, true)) {
-        $errors['bloodGroup'] = 'Selected blood group is invalid.';
-    }
 
-    // 2. Validate GPS Coordinates or Manual Location Text
-    $hasValidCoords = false;
-    if ($lat !== '' && $lng !== '') {
-        $latVal = filter_var($lat, FILTER_VALIDATE_FLOAT);
-        $lngVal = filter_var($lng, FILTER_VALIDATE_FLOAT);
+        $bloodGroup =
+            $_GET["blood_group"] ?? "";
 
-        if ($latVal !== false && $lngVal !== false && $latVal >= -90 && $latVal <= 90 && $lngVal >= -180 && $lngVal <= 180) {
-            $hasValidCoords = true;
-        } else {
-            $lat = '';
-            $lng = '';
+        $latitude =
+            $_GET["latitude"] ?? "";
+
+        $longitude =
+            $_GET["longitude"] ?? "";
+
+
+        if (
+            $bloodGroup === "" ||
+            !is_numeric($latitude) ||
+            !is_numeric($longitude)
+        ) {
+
+            echo json_encode([
+                "success" => false,
+                "message" => "Invalid search information."
+            ]);
+
+            return;
         }
+
+
+        $database = new Database();
+
+        $connection = $database->connect();
+
+
+        /*
+        Haversine formula.
+        Distance is calculated in KM.
+        */
+
+        $sql = "
+            SELECT
+                donors.id,
+                users.name,
+                users.email,
+                donors.phone,
+                donors.blood_group,
+                donors.last_donation_date,
+                donors.total_donations,
+                donors.latitude,
+                donors.longitude,
+
+                (
+                    6371 * ACOS(
+                        COS(RADIANS(:latitude))
+                        *
+                        COS(RADIANS(donors.latitude))
+                        *
+                        COS(
+                            RADIANS(donors.longitude)
+                            -
+                            RADIANS(:longitude)
+                        )
+                        +
+                        SIN(RADIANS(:latitude))
+                        *
+                        SIN(RADIANS(donors.latitude))
+                    )
+                ) AS distance
+
+            FROM donors
+
+            INNER JOIN users
+                ON donors.user_id = users.id
+
+            WHERE donors.blood_group = :blood_group
+
+            AND donors.availability = 1
+
+            AND donors.verified = 1
+
+            HAVING distance <= 5
+
+            ORDER BY distance ASC
+        ";
+
+
+        $statement =
+            $connection->prepare($sql);
+
+
+        $statement->execute([
+            ":latitude" => $latitude,
+            ":longitude" => $longitude,
+            ":blood_group" => $bloodGroup
+        ]);
+
+
+        $donors =
+            $statement->fetchAll(PDO::FETCH_ASSOC);
+
+
+        echo json_encode([
+            "success" => true,
+            "count" => count($donors),
+            "donors" => $donors
+        ]);
     }
 
-    if (!$hasValidCoords) {
-        if ($location === '') {
-            $errors['location'] = 'Please enter a location or enable GPS location.';
-        } elseif (mb_strlen($location) < 2) {
-            $errors['location'] = 'Location must be at least 2 characters.';
-        } elseif (mb_strlen($location) > 100) {
-            $errors['location'] = 'Location text is too long.';
+
+    public function donorDetails()
+    {
+        header("Content-Type: application/json");
+
+
+        $id = $_GET["id"] ?? "";
+
+
+        if (!is_numeric($id)) {
+
+            echo json_encode([
+                "success" => false,
+                "message" => "Invalid donor ID."
+            ]);
+
+            return;
         }
-    }
 
-    // 3. Validate Search Radius
-    $radiusInt = filter_var($radius, FILTER_VALIDATE_INT);
-    $validRadii = [5, 10, 25];
-    if ($radiusInt === false || !in_array($radiusInt, $validRadii, true)) {
-        $radiusInt = 5; // Default safe fallback
-    }
 
-    // If validation errors exist, send back to findBlood.php
-    if (!empty($errors)) {
-        $_SESSION['errors'] = $errors;
-        $_SESSION['old_search'] = [
-            'blood_group' => $bloodGroup,
-            'location'    => $location,
-            'radius'      => $radiusInt,
-            'lat'         => $lat,
-            'lng'         => $lng
-        ];
-        header('Location: ../views/blood/findBlood.php');
-        exit;
-    }
+        $database = new Database();
 
-    // 4. Set Persistent Cookies (Valid for 30 Days)
-    $cookieExpire = time() + (86400 * 30);
-    setcookie('bb_last_blood_group', $bloodGroup, $cookieExpire, '/');
-    if ($location !== '') {
-        setcookie('bb_last_location', $location, $cookieExpire, '/');
-    }
-    setcookie('bb_last_radius', (string)$radiusInt, $cookieExpire, '/');
+        $connection = $database->connect();
 
-    // Update Recent Searches Cookie (JSON array of max 3 items)
-    $recentSearches = [];
-    if (!empty($_COOKIE['bb_recent_searches'])) {
-        $decoded = json_decode($_COOKIE['bb_recent_searches'], true);
-        if (is_array($decoded)) {
-            $recentSearches = $decoded;
+
+        $sql = "
+            SELECT
+                donors.id,
+                users.name,
+                users.email,
+                donors.phone,
+                donors.blood_group,
+                donors.last_donation_date,
+                donors.total_donations,
+                donors.latitude,
+                donors.longitude
+
+            FROM donors
+
+            INNER JOIN users
+                ON donors.user_id = users.id
+
+            WHERE donors.id = :id
+
+            AND donors.verified = 1
+
+            LIMIT 1
+        ";
+
+
+        $statement =
+            $connection->prepare($sql);
+
+
+        $statement->execute([
+            ":id" => $id
+        ]);
+
+
+        $donor =
+            $statement->fetch(PDO::FETCH_ASSOC);
+
+
+        if (!$donor) {
+
+            echo json_encode([
+                "success" => false,
+                "message" => "Donor not found."
+            ]);
+
+            return;
         }
+
+
+        echo json_encode([
+            "success" => true,
+            "donor" => $donor
+        ]);
     }
-
-    $newSearchItem = [
-        'group'    => $bloodGroup,
-        'location' => $location !== '' ? $location : 'Current Location',
-        'radius'   => $radiusInt
-    ];
-
-    // Filter out duplicates and keep top 3
-    $recentSearches = array_filter($recentSearches, function ($item) use ($newSearchItem) {
-        return !($item['group'] === $newSearchItem['group'] && $item['location'] === $newSearchItem['location']);
-    });
-    array_unshift($recentSearches, $newSearchItem);
-    $recentSearches = array_slice($recentSearches, 0, 3);
-    setcookie('bb_recent_searches', json_encode($recentSearches), $cookieExpire, '/');
-
-    // 5. Store Search Parameters in Session
-    $_SESSION['last_search'] = [
-        'blood_group' => $bloodGroup,
-        'location'    => $location,
-        'radius'      => $radiusInt,
-        'lat'         => $lat,
-        'lng'         => $lng,
-        'time'        => time()
-    ];
-
-    // Build URL query string and forward to search results
-    $queryParams = http_build_query([
-        'blood_group' => $bloodGroup,
-        'location'    => $location,
-        'radius'      => $radiusInt,
-        'lat'         => $lat,
-        'lng'         => $lng
-    ]);
-
-    header('Location: ../views/blood/searchResult.php?' . $queryParams);
-    exit;
-
-} else {
-    header('Location: ../views/blood/findBlood.php');
-    exit;
 }

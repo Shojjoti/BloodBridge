@@ -1,389 +1,210 @@
 <?php
-session_start();
-
-// Get Search Parameters from GET query or Session
-$bloodGroup = trim($_GET['blood_group'] ?? ($_SESSION['last_search']['blood_group'] ?? ''));
-$location   = trim($_GET['location'] ?? ($_SESSION['last_search']['location'] ?? ''));
-$radius     = (int)($_GET['radius'] ?? ($_SESSION['last_search']['radius'] ?? 5));
-$lat        = trim($_GET['lat'] ?? ($_SESSION['last_search']['lat'] ?? ''));
-$lng        = trim($_GET['lng'] ?? ($_SESSION['last_search']['lng'] ?? ''));
-
-// Validate required parameters; fallback to default if missing
-$validBloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-if ($bloodGroup === '' || !in_array($bloodGroup, $validBloodGroups, true)) {
-    // If accessed directly without search, default to O+ or redirect
-    $bloodGroup = 'O+';
-}
-if ($radius <= 0 || $radius > 100) {
-    $radius = 5;
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 
-// User session status
-$isLoggedIn = isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true;
-$userName   = $_SESSION['user_name'] ?? '';
-$userRole   = $_SESSION['user_role'] ?? 'user';
-$profileUrl = $userRole === 'donor' ? '../authority/donorProfile.php' : '../authority/userProfile.php';
+// 1. Get search parameters
+$bloodGroup = $_GET['blood_group'] ?? 'O+';
+$location   = $_GET['location'] ?? '';
+$radius     = (int)($_GET['radius'] ?? 5);
+$lat        = $_GET['lat'] ?? '';
+$lng        = $_GET['lng'] ?? '';
 
-// Prepare Donors List (Database query with mock fallback for demonstration)
-$donors = [
-    [
-        'id'          => 1,
-        'name'        => 'Rahim Ahmed',
-        'initials'    => 'RA',
-        'blood_group' => $bloodGroup,
-        'distance'    => '0.3',
-        'last_date'   => '12 Apr 2026',
-        'donations'   => 5,
-        'status'      => 'Available',
-        'phone'       => '+880 1712-345678',
-        'email'       => 'rahim.ahmed@gmail.com'
-    ],
-    [
-        'id'          => 2,
-        'name'        => 'Karim Hasan',
-        'initials'    => 'KH',
-        'blood_group' => $bloodGroup,
-        'distance'    => '0.8',
-        'last_date'   => '03 May 2026',
-        'donations'   => 4,
-        'status'      => 'Available',
-        'phone'       => '+880 1819-876543',
-        'email'       => 'karim.hasan@gmail.com'
-    ],
-    [
-        'id'          => 3,
-        'name'        => 'Sadia Rahman',
-        'initials'    => 'SR',
-        'blood_group' => $bloodGroup,
-        'distance'    => '1.6',
-        'last_date'   => '16 Apr 2026',
-        'donations'   => 6,
-        'status'      => 'Available',
-        'phone'       => '+880 1911-223344',
-        'email'       => 'sadia.rahman@gmail.com'
-    ]
-];
+// 2. Check if user is logged in (to show contact details later)
+$isLoggedIn = isset($_SESSION['user_id']);
+$userName   = $_SESSION['name'] ?? 'User';
+$userRole   = $_SESSION['role'] ?? 'user';
+$profileUrl = $userRole === 'donor' ? 'index.php?page=donor-dashboard' : ($userRole === 'admin' ? 'index.php?page=admin-dashboard' : 'index.php?page=user-dashboard');
 
-// If radius is 10 or 25, add farther donors to demonstrate radius filtering
-if ($radius >= 10) {
-    $donors[] = [
-        'id'          => 4,
-        'name'        => 'Tanvir Hossain',
-        'initials'    => 'TH',
-        'blood_group' => $bloodGroup,
-        'distance'    => '7.2',
-        'last_date'   => '28 Feb 2026',
-        'donations'   => 3,
-        'status'      => 'Available',
-        'phone'       => '+880 1610-998877',
-        'email'       => 'tanvir.h@gmail.com'
-    ];
-}
-if ($radius >= 25) {
-    $donors[] = [
-        'id'          => 5,
-        'name'        => 'Nusrat Jahan',
-        'initials'    => 'NJ',
-        'blood_group' => $bloodGroup,
-        'distance'    => '18.4',
-        'last_date'   => '10 Jan 2026',
-        'donations'   => 8,
-        'status'      => 'Available',
-        'phone'       => '+880 1515-443322',
-        'email'       => 'nusrat.j@gmail.com'
-    ];
+// 3. Connect to Database
+require_once "../config/database.php";
+$db = new Database();
+$conn = $db->connect();
+
+$donors = [];
+
+// 4. Run the Search Query
+if ($lat !== '' && $lng !== '') {
+    // We use the Haversine formula to calculate the distance between coordinates in KM
+    $sql = "
+        SELECT 
+            donors.id, 
+            users.name, 
+            users.email, 
+            donors.phone, 
+            donors.blood_group, 
+            donors.last_donation_date, 
+            donors.total_donations, 
+            (
+                6371 * ACOS(
+                    LEAST(1.0, COS(RADIANS(:lat)) 
+                    * COS(RADIANS(donors.latitude)) 
+                    * COS(RADIANS(donors.longitude) - RADIANS(:lng)) 
+                    + SIN(RADIANS(:lat)) 
+                    * SIN(RADIANS(donors.latitude)))
+                )
+            ) AS distance
+        FROM donors
+        INNER JOIN users ON donors.user_id = users.id
+        WHERE donors.blood_group = :blood_group
+        AND donors.availability = 1
+        HAVING distance <= :radius
+        ORDER BY distance ASC
+    ";
+    
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([
+        ':lat' => $lat,
+        ':lng' => $lng,
+        ':blood_group' => $bloodGroup,
+        ':radius' => $radius
+    ]);
+    
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Format the results for the HTML page
+    foreach ($results as $row) {
+        $donors[] = [
+            'name' => $row['name'],
+            'email' => $row['email'],
+            'phone' => $row['phone'],
+            'blood_group' => $row['blood_group'],
+            'distance' => round($row['distance'], 1),
+            'last_date' => $row['last_donation_date'] ? date('M d, Y', strtotime($row['last_donation_date'])) : 'Never',
+            'donations' => $row['total_donations']
+        ];
+    }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Results · BloodBridge</title>
     
-    <link rel="stylesheet" href="../../public/style/1.home.css">
-    <link rel="stylesheet" href="../../public/style/blood.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style/1.home.css">
+    <link rel="stylesheet" href="style/blood.css">
 </head>
-
 <body>
-<header class="navbar">
-    <div class="brand">
-        BloodBridge               
-        <img src="../../public/images/logo.jpg" alt="BloodBridge Logo">        
-    </div>
 
-    <nav class="nav-links">
-        <a href="../../views/home/1.home.php">
-            Home
-        </a>
-        <a href="../../views/blood/findBlood.php" class="active">
-            Find Blood
-        </a>
-        <a href="../../views/authority/donerRegistration.php">
-            Become a Donor
-        </a>
-    </nav>
-
-    <div class="nav-actions">        
-        <?php if ($isLoggedIn): ?>
-            <a href="<?php echo htmlspecialchars($profileUrl); ?>" class="user-menu-badge" style="text-decoration:none;">
-                <span class="user-avatar-sm"><?php echo htmlspecialchars(strtoupper(substr($userName, 0, 2))); ?></span>
-                <span><?php echo htmlspecialchars($userName); ?></span>
-            </a>
-        <?php else: ?>
-            <button class="btn btn-outline btn-sm" onclick="window.location.href='../../views/authority/login.php'"> Log in </button>
-            <button class="btn btn-primary btn-sm" onclick="window.location.href='../../views/authority/userRegistration.php'"> Register </button>    
-        <?php endif; ?>
-    </div>
-</header>
-
-<section class="container search-results-section">
-    <div class="search-results-header">
-        <div>
-            <h1 class="search-results-title">Donors Near You</h1>
-            <p class="search-results-subtitle">
-                Showing donors within <?php echo htmlspecialchars((string)$radius); ?> KM
-                <?php if ($location !== ''): ?>
-                    around <strong><?php echo htmlspecialchars($location); ?></strong>
-                <?php endif; ?>
-            </p>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="brand">
+            BloodBridge               
+            <img src="images/logo.jpg" alt="Logo">        
         </div>
-        <div class="search-filter-badge-col">
-            <span class="badge badge-red">Blood group: <?php echo htmlspecialchars($bloodGroup); ?></span>
+
+        <nav class="nav-links">
+            <a href="index.php?page=home">Home</a>
+            <a href="index.php?page=find-blood" class="active">Find Blood</a>
+            <a href="index.php?page=donor-register">Become a Donor</a>
+        </nav>
+
+        <div class="nav-actions">        
+            <?php if ($isLoggedIn): ?>
+                <a href="<?php echo $profileUrl; ?>" style="text-decoration:none; color: black; font-weight: bold;">
+                    👤 <?php echo $userName; ?>
+                </a>
+                <form method="POST" action="index.php?page=logout" style="display:inline;">
+                    <button type="submit" class="btn btn-primary btn-sm">Logout</button>
+                </form>
+            <?php else: ?>
+                <a href="index.php?page=login" class="btn btn-outline btn-sm">Log in</a>
+                <a href="index.php?page=user-register" class="btn btn-primary btn-sm">Register</a>
+            <?php endif; ?>
+        </div>
+    </header>
+
+    <!-- Search Results Section -->
+    <section class="search-results-section">
+        
+        <div class="search-results-header">
             <div>
-                <a href="../../views/blood/findBlood.php" class="change-search-link">Change search</a>
+                <h2>Donors Near You</h2>
+                <p>Showing donors within <?php echo $radius; ?> KM</p>
+            </div>
+            <div>
+                <span class="badge badge-red">Blood group: <?php echo htmlspecialchars($bloodGroup); ?></span>
+                <br>
+                <a href="index.php?page=find-blood" style="color: red; text-decoration: none; font-size: 14px;">Change search</a>
             </div>
         </div>
-    </div>
 
-    <!-- Donor Cards Loop -->
-    <?php if (!empty($donors)): ?>
-        <?php foreach ($donors as $donor): ?>
-            <div class="card donor-card">
-                <div class="donor-info-group">
-                    <div class="donor-avatar"><?php echo htmlspecialchars($donor['initials']); ?></div>
+        <!-- Loop Through Donors -->
+        <?php if (count($donors) > 0): ?>
+            <?php foreach ($donors as $donor): ?>
+                <div class="card donor-card">
                     <div>
-                        <div class="donor-title-row">
-                            <span class="donor-name"><?php echo htmlspecialchars($donor['name']); ?></span>
-                            <span class="badge badge-red"><?php echo htmlspecialchars($donor['blood_group']); ?></span>
-                        </div>
-                        <div class="donor-meta">
-                            <?php echo htmlspecialchars($donor['distance']); ?> km away &middot; 
-                            Last donation: <?php echo htmlspecialchars($donor['last_date']); ?> &middot; 
-                            Donations: <?php echo htmlspecialchars((string)$donor['donations']); ?>
-                        </div>
+                        <h3 style="margin: 0;"><?php echo htmlspecialchars($donor['name']); ?></h3>
+                        <p style="margin: 5px 0; color: gray; font-size: 14px;">
+                            Distance: <?php echo $donor['distance']; ?> km away <br>
+                            Last donation: <?php echo $donor['last_date']; ?>
+                        </p>
+                    </div>
+                    
+                    <div>
+                        <span class="badge badge-success">Available</span>
+                        <!-- Pass donor data to Javascript when button is clicked -->
+                        <button 
+                            type="button" 
+                            class="btn btn-outline btn-sm"
+                            onclick="showContactModal('<?php echo $donor['name']; ?>', '<?php echo $donor['phone']; ?>', '<?php echo $donor['email']; ?>', '<?php echo $isLoggedIn; ?>')"
+                        >
+                            View Contact
+                        </button>
                     </div>
                 </div>
-                <div class="donor-action-group">
-                    <span class="badge badge-success"><?php echo htmlspecialchars($donor['status']); ?></span>
-                    
-                    <button 
-                        type="button" 
-                        class="btn btn-outline btn-sm view-contact-btn"
-                        data-logged-in="<?php echo $isLoggedIn ? '1' : '0'; ?>"
-                        data-name="<?php echo htmlspecialchars($donor['name']); ?>"
-                        data-phone="<?php echo htmlspecialchars($donor['phone']); ?>"
-                        data-email="<?php echo htmlspecialchars($donor['email']); ?>"
-                        data-group="<?php echo htmlspecialchars($donor['blood_group']); ?>"
-                    >
-                        View Contact
-                    </button>
-                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <div class="card" style="text-align: center;">
+                <h3>No Donors Found</h3>
+                <p>We could not find any active donors matching <?php echo htmlspecialchars($bloodGroup); ?> in this radius.</p>
+                <a href="index.php?page=find-blood" class="btn btn-primary btn-sm" style="text-decoration:none;">Try Wider Search</a>
             </div>
-        <?php endforeach; ?>
-        <p class="no-donors-text">Showing all matching donors within <?php echo htmlspecialchars((string)$radius); ?> KM.</p>
-    <?php else: ?>
-        <div class="card" style="padding: 40px; text-align: center;">
-            <h3>No Donors Found</h3>
-            <p style="color: var(--gray); margin-top: 8px;">We could not find any active donors matching <strong><?php echo htmlspecialchars($bloodGroup); ?></strong> in this radius.</p>
-            <a href="findBlood.php" class="btn btn-primary btn-sm" style="display:inline-block; margin-top:16px; text-decoration:none;">Try Wider Search</a>
-        </div>
-    <?php endif; ?>
-</section>
+        <?php endif; ?>
+    </section>
 
-<!-- Protected Contact Details Modal (For Logged In Users) -->
-<div id="contactModal" class="popup-overlay" style="display: none;">
-    <div class="popup-box">
-        <h2 id="modalDonorName">Donor Contact</h2>
-        <p>Contact the donor directly to request blood donation.</p>
-
-        <div class="popup-contact-info">
-            <div class="popup-contact-row">
-                <strong>Blood:</strong>
-                <span id="modalDonorGroup" class="badge badge-red"></span>
+    <!-- Popup Modal For Logged In Users -->
+    <div id="contactModal" class="popup-overlay" style="display: none;">
+        <div class="popup-box">
+            <h2 id="modalName">Donor Name</h2>
+            <div class="popup-contact-info">
+                <p><strong>Phone:</strong> <span id="modalPhone"></span></p>
+                <p><strong>Email:</strong> <span id="modalEmail"></span></p>
             </div>
-            <div class="popup-contact-row">
-                <strong>Phone:</strong>
-                <span id="modalDonorPhone" style="font-weight: 600;"></span>
-            </div>
-            <div class="popup-contact-row">
-                <strong>Email:</strong>
-                <span id="modalDonorEmail"></span>
-            </div>
-        </div>
-
-        <div class="popup-actions">
-            <a id="modalCallBtn" href="#" class="btn btn-primary btn-sm" style="text-decoration:none; padding: 8px 16px;">
-                📞 Call Now
-            </a>
-            <button type="button" id="closeContactModalBtn" class="btn btn-outline btn-sm">
-                Close
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- Login Required Prompt Modal (For Guests / Privacy Protection) -->
-<div id="loginPromptModal" class="popup-overlay" style="display: none;">
-    <div class="popup-box">
-        <h2>🔒 Log In Required</h2>
-        <p>To protect donor privacy and prevent spam, please log in to view donor contact information.</p>
-        <div class="popup-actions">
-            <button class="btn btn-primary btn-sm" onclick="window.location.href='../../views/authority/login.php'">
-                Log In
-            </button>
-            <button class="btn btn-outline btn-sm" onclick="window.location.href='../../views/authority/userRegistration.php'">
-                Register
-            </button>
-            <button type="button" id="closeLoginPromptBtn" class="btn btn-outline btn-sm" style="border:none; color:var(--gray);">
-                Cancel
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- FOOTER -->
-<footer class="footer">
-    <div class="footer-container">
-        <!-- ABOUT -->
-        <div class="footer-column footer-about">
-            <div class="footer-brand">
-                BloodBridge
-                <img src="../../public/images/logo.jpg" alt="blood drop logo">
-            </div>
-            <p>
-                BloodBridge connects donors with people in need,
-                so help arrives faster when it matters most.
-            </p>
-        </div>
-        <!-- QUICK LINKS -->
-        <div class="footer-column">
-            <h4> Quick Links </h4>
-
-            <a href="../../views/home/1.home.php">Home </a>
-            <a href="../../views/blood/findBlood.php">Find Blood </a>
-            <a href="../../views/authority/donerRegistration.php">Become a Donor</a>
-            <a href="../../views/home/aboutUs.php"> About Us </a>
-        </div>
-
-        <!-- DONORS -->
-        <div class="footer-column">
-            <h4> For Donors </h4>
-            <a href="../../views/authority/donerRegistration.php">
-                Donor Register
-            </a>
-            <a href="#">Donation Guide</a>
-            <a href="#"> Donor FAQs </a>          
-        </div>
-
-        <!-- USERS -->
-        <div class="footer-column">
-            <h4> For Users </h4>
-            <a href="../../views/blood/searchResult.php">
-                Search Blood
-            </a>
-            <a href="../../views/blood/searchResult.php">
-                Blood Requests
-            </a>
-            <a href="#">
-                User FAQs
-            </a>
-        </div>
-
-        <!-- CONTACT -->
-        <div class="footer-column">
-            <h4> Contact Us </h4>
-            <span>
-                +880 1234-567890
-            </span>
-            <span>
-                support@bloodBridge.com
-            </span>
-            <span>
-                Dhaka, Bangladesh
-            </span>
+            <button class="btn btn-outline" onclick="closeModal('contactModal')">Close</button>
         </div>
     </div>
 
-    <!-- COPYRIGHT -->
-    <div class="footer-bottom">
-        <div class="footer-bottom-inner">
-            <span>
-                © 2026 BloodBridge. All rights reserved.
-            </span>
-            <div>
-                <a href="#">
-                    Privacy Policy
-                </a>
-                <a href="#">
-                    Terms & Conditions
-                </a>
-            </div>
+    <!-- Popup Modal For Guests -->
+    <div id="loginModal" class="popup-overlay" style="display: none;">
+        <div class="popup-box">
+            <h2>Log In Required</h2>
+            <p>Please log in to view donor contact information.</p>
+            <a href="index.php?page=login" class="btn btn-primary">Log In</a>
+            <button class="btn btn-outline" onclick="closeModal('loginModal')">Cancel</button>
         </div>
     </div>
-</footer>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const contactBtns       = document.querySelectorAll('.view-contact-btn');
-    const contactModal      = document.getElementById('contactModal');
-    const loginPromptModal  = document.getElementById('loginPromptModal');
-    const closeContactBtn   = document.getElementById('closeContactModalBtn');
-    const closeLoginBtn     = document.getElementById('closeLoginPromptBtn');
-
-    contactBtns.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-            const isLoggedIn = btn.getAttribute('data-logged-in') === '1';
-
+    <!-- Simple JavaScript for Modals -->
+    <script>
+        function showContactModal(name, phone, email, isLoggedIn) {
             if (isLoggedIn) {
-                // User is authenticated -> show donor contact details
-                document.getElementById('modalDonorName').textContent = btn.getAttribute('data-name');
-                document.getElementById('modalDonorGroup').textContent = btn.getAttribute('data-group');
-                document.getElementById('modalDonorPhone').textContent = btn.getAttribute('data-phone');
-                document.getElementById('modalDonorEmail').textContent = btn.getAttribute('data-email');
-                document.getElementById('modalCallBtn').href = 'tel:' + btn.getAttribute('data-phone');
-                contactModal.style.display = 'flex';
+                document.getElementById('modalName').innerText = name;
+                document.getElementById('modalPhone').innerText = phone;
+                document.getElementById('modalEmail').innerText = email;
+                document.getElementById('contactModal').style.display = 'flex';
             } else {
-                // Guest user -> show login prompt modal
-                loginPromptModal.style.display = 'flex';
+                document.getElementById('loginModal').style.display = 'flex';
             }
-        });
-    });
-
-    if (closeContactBtn) {
-        closeContactBtn.addEventListener('click', function () {
-            contactModal.style.display = 'none';
-        });
-    }
-
-    if (closeLoginBtn) {
-        closeLoginBtn.addEventListener('click', function () {
-            loginPromptModal.style.display = 'none';
-        });
-    }
-
-    // Close on overlay backdrop click
-    [contactModal, loginPromptModal].forEach(function (modal) {
-        if (modal) {
-            modal.addEventListener('click', function (e) {
-                if (e.target === modal) {
-                    modal.style.display = 'none';
-                }
-            });
         }
-    });
-});
-</script>
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+    </script>
 </body>
 </html>

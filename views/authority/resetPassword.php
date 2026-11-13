@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 $errors = $_SESSION['errors'] ?? [];
 unset($_SESSION['errors']);
 ?>
@@ -11,7 +13,7 @@ unset($_SESSION['errors']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password · BloodBridge</title>
-    <link rel="stylesheet" href="../../public/style/auth-style.css">
+    <link rel="stylesheet" href="style/auth-style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -24,10 +26,10 @@ unset($_SESSION['errors']);
 
     <div class="brand">
         BloodBridge               
-            <img src="../../public/images/logo.jpg" alt="BloodBridge Logo">        
+        <img src="images/logo.jpg" onerror="this.src='../../public/images/logo.jpg'" alt="BloodBridge Logo">        
     </div>
 
-    <a href="../../views/home/1.home.php" class="back-home">← Back to home</a>
+    <a href="index.php?page=home" class="back-home">← Back to home</a>
         
 </header> 
 
@@ -52,19 +54,19 @@ unset($_SESSION['errors']);
                 </div>
 
                 <div class="auth-icon">
-                    <img src="../../public/images/lock.png" alt="Reset Password" width="100%" height="100%">
+                    <img src="images/lock.png" onerror="this.src='../../public/images/lock.png'" alt="Reset Password" width="100%" height="100%">
                 </div>
 
                 <h1 class="auth-h1">Set New Password</h1>
                 <p class="auth-p">Choose a new password for your account.</p>
 
-                <form id="resetPasswordForm" action="../../controllers/AuthController.php" method="POST" novalidate>
+                <form id="resetPasswordForm" action="<?php echo defined('BASE_URL') ? BASE_URL . '?page=reset-password' : 'index.php?page=reset-password'; ?>" method="POST" novalidate>
                     <div class="field-block">
                         <label class="field-label">New password</label>
                         <div class="field-input-wrap">
                             <input class="field-input" type="password" id="new_password" name="new_password" placeholder="Enter new password">
                             <button class="eye-btn" type="button">
-                                <img src="../../public/images/eye.png" alt="Toggle password" width="18" height="18">
+                                <img src="images/eye.png" onerror="this.src='../../public/images/eye.png'" alt="Toggle password" width="18" height="18">
                             </button>
                         </div>
                         <span class="error-message" id="newPasswordError"><?php echo htmlspecialchars($errors['new_password'] ?? ''); ?></span>
@@ -75,7 +77,7 @@ unset($_SESSION['errors']);
                         <div class="field-input-wrap">
                             <input class="field-input" type="password" id="confirm_password" name="confirm_password" placeholder="Confirm new password">
                             <button class="eye-btn" type="button">
-                                <img src="../../public/images/eye.png" alt="Toggle password" width="18" height="18">
+                                <img src="images/eye.png" onerror="this.src='../../public/images/eye.png'" alt="Toggle password" width="18" height="18">
                             </button>
                         </div>
                         <span class="error-message" id="confirmPasswordError"><?php echo htmlspecialchars($errors['confirm_password'] ?? ''); ?></span>
@@ -85,13 +87,13 @@ unset($_SESSION['errors']);
                 </form>
 
                 <p class="auth-bottom-text">
-                    <a href="login.php" class="auth-link">← Back to login</a>
+                    <a href="index.php?page=login" class="auth-link">← Back to login</a>
                 </p>
             </div>
         </div>
     </div>
 
-    <script src="../../public/js/resetPassword.js"></script>
+    <script src="js/resetPassword.js"></script>
 </body>
 
 </html>

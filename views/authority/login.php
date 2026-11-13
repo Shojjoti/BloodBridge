@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 $showSuccessPopup = false;
 $registeredName = '';
 
@@ -29,7 +31,7 @@ unset($_SESSION['old']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login · BloodBridge</title>
-    <link rel="stylesheet" href="../../public/style/auth-style.css">
+    <link rel="stylesheet" href="style/auth-style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -42,10 +44,10 @@ unset($_SESSION['old']);
 
         <div class="brand">
             BloodBridge
-            <img src="../../public/images/logo.jpg" alt="BloodBridge Logo">
+            <img src="images/logo.jpg" onerror="this.src='../../public/images/logo.jpg'" alt="BloodBridge Logo">
         </div>
 
-        <a href="../../views/home/1.home.php" class="back-home">← Back to home</a>
+        <a href="index.php?page=home" class="back-home">← Back to home</a>
 
     </header>
 
@@ -56,7 +58,15 @@ unset($_SESSION['old']);
                 <h1 class="auth-h1">Welcome Back</h1>
                 <p class="auth-p">Log in to your account</p>
 
-                <form id="loginForm" action="../../controllers/AuthController.php" method="POST" novalidate>
+                <?php if (!empty($errors)): ?>
+                    <div style="background:#FDEEEF; color:#D62839; border:1px solid #FBD8DB; border-radius:8px; padding:10px 14px; margin-bottom:14px; font-size:13px; font-weight:500;">
+                        <?php foreach ((array)$errors as $err): ?>
+                            <div><?= htmlspecialchars($err) ?></div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+
+                <form id="loginForm" action="<?php echo defined('BASE_URL') ? BASE_URL . '?page=login' : 'index.php?page=login'; ?>" method="POST" novalidate>
                     <div class="field-block">
                         <label class="field-label">Gmail</label>
                         <input class="field-input" type="email" id="email" name="email" placeholder="example@gmail.com" value="<?php echo htmlspecialchars($old['email'] ?? ''); ?>">
@@ -65,12 +75,7 @@ unset($_SESSION['old']);
 
                     <div class="field-block">
                         <label class="field-label">Password</label>
-                        <div class="field-input-wrap">
-                            <input class="field-input" type="password" id="password" name="password" placeholder="Enter your password">
-                            <button class="eye-btn" type="button">
-                                <img src="../../public/images/eye.png" alt="Toggle password" width="18" height="18">
-                            </button>
-                        </div>
+                        <input class="field-input" type="password" id="password" name="password" placeholder="Enter your password">
                         <span class="error-message" id="passwordError"><?php echo htmlspecialchars($errors['password'] ?? ''); ?></span>
                     </div>
 
@@ -79,7 +84,7 @@ unset($_SESSION['old']);
                             <input type="checkbox" name="remember">
                             Remember me
                         </label>
-                        <a href="resetPassword.php" class="auth-link">Forgot password?</a>
+                        <a href="index.php?page=reset-password" class="auth-link">Forgot password?</a>
                     </div>
 
                     <button class="common-btn" type="submit" name="login">Log in</button>
@@ -87,15 +92,15 @@ unset($_SESSION['old']);
 
                 <p class="auth-bottom-text">Don't have an account?</p>
                 <div class="register-row">
-                    <button class="btn-outline" type="button" onclick="location.href='donerRegistration.php'">Register as
+                    <button class="btn-outline" type="button" onclick="location.href='index.php?page=donor-register'">Register as
                         Donor</button>
-                    <button class="btn-secondary" type="button" onclick="location.href='userRegistration.php'">Register as
+                    <button class="btn-secondary" type="button" onclick="location.href='index.php?page=user-register'">Register as
                         User</button>
                 </div>
             </div>
 
             <div class="login-card-right">
-                <img src="../../public/images/blood_drop.png" alt="Blood Drop" width="180" height="180">
+                <img src="images/blood_drop.png" onerror="this.src='../../public/images/blood_drop.png'" alt="Blood Drop" width="180" height="180">
                 <div>
                     <h2>Every Drop Counts</h2>
                     <p>Sign in to manage requests, track donations, and stay connected.</p>
@@ -135,7 +140,7 @@ unset($_SESSION['old']);
         </script>
     <?php endif; ?>
 
-    <script src="../../public/js/login.js"></script>
+    <script src="js/login.js"></script>
 </body>
 
 </html>

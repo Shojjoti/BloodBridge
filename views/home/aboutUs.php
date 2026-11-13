@@ -1,40 +1,63 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$isLoggedIn = isset($_SESSION['user_id']) || (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true);
+$userName   = $_SESSION['name'] ?? ($_SESSION['user_name'] ?? 'User');
+$userRole   = $_SESSION['role'] ?? ($_SESSION['user_role'] ?? 'user');
+$profileLink = $userRole === 'donor' ? 'index.php?page=donor-dashboard' : ($userRole === 'admin' ? 'index.php?page=admin-dashboard' : 'index.php?page=user-dashboard');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us</title>
-    <link rel="stylesheet" href="../../public/style/aboutUs.css">
-    <link rel="stylesheet" href="../../public/style/1.home.css">
+    <title>About Us · BloodBridge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style/aboutUs.css">
+    <link rel="stylesheet" href="style/1.home.css">
 </head>
 <body>
 <header class="navbar">
 
     <div class="brand">
         BloodBridge               
-            <img src="../../public/images/logo.jpg" alt="BloodBridge Logo">        
+        <img src="images/logo.jpg" onerror="this.src='../../public/images/logo.jpg'" alt="BloodBridge Logo">        
     </div>
 
 
     <nav class="nav-links">
-        <a href="../../views/home/1.home.php" class="active">
+        <a href="index.php?page=home">
             Home
         </a>
-        <a href="../../views/blood/findBlood.php">
+        <a href="index.php?page=find-blood">
             Find Blood
         </a>
-        <a href="../../views/authority/donerRegistration.php">
+        <a href="index.php?page=donor-register">
             Become a Donor
+        </a>
+        <a href="index.php?page=about" class="active">
+            About Us
         </a>
     </nav>
 
 
     <div class="nav-actions">        
-
-        <button class="btn btn-outline btn-sm" onclick="window.location.href='../../views/authority/login.php'"> Log in </button>
-              
-        <button class="btn btn-primary btn-sm" onclick="window.location.href='../../views/authority/userRegistration.php'"> Register </button>   
-                
+        <?php if ($isLoggedIn): ?>
+            <a href="<?= htmlspecialchars($profileLink) ?>" class="user-menu-badge" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-weight:600; color:var(--dark);">
+                <span style="font-size:16px;">👤</span>
+                <span><?= htmlspecialchars($userName) ?></span>
+            </a>
+            <form method="POST" action="index.php?page=logout" style="margin:0; display:inline;">
+                <button type="submit" class="btn btn-primary btn-sm"> Logout </button>
+            </form>
+        <?php else: ?>
+            <button class="btn btn-outline btn-sm" onclick="window.location.href='index.php?page=login'"> Log in </button>
+            <button class="btn btn-primary btn-sm" onclick="window.location.href='index.php?page=user-register'"> Register </button>   
+        <?php endif; ?>
     </div>
 </header>
 
